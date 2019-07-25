@@ -15,7 +15,8 @@
     "url": "https://github.com/Reidond/vscode-hemtt"
   },
   "activationEvents": [
-    "onCommand:extension.helloWorld"
+    "workspaceContains:hemtt.json",
+    "workspaceContains:hemtt.toml"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -34,7 +35,13 @@
           "description": "Path to hemtt executable"
         }
       }
-    }
+    },
+    "jsonValidation": [
+      {
+        "fileMatch": "hemtt.json",
+        "url": "http://json.schemastore.org/hemtt-0.6.2"
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "webpack --mode production",
