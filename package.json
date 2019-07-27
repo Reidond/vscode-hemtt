@@ -22,8 +22,14 @@
   "contributes": {
     "commands": [
       {
-        "command": "extension.helloWorld",
-        "title": "Hello World"
+        "command": "hemtt.project.create",
+        "title": "Create Project",
+        "category": "HEMTT"
+      },
+      {
+        "command": "hemtt.project.init",
+        "title": "Init Project",
+        "category": "HEMTT"
       }
     ],
     "configuration": {
@@ -38,7 +44,8 @@
     },
     "jsonValidation": [
       {
-        "url": "http://json.schemastore.org/hemtt-0.6.2"
+        "fileMatch": "hemtt.*",
+        "url": "./schemas/hemtt-0.6.2.json"
       }
     ]
   },
