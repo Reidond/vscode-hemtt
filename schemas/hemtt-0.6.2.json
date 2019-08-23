@@ -3,14 +3,20 @@
   "allowComments": true,
   "type": "object",
   "description": "The hemtt.json or hemtt.toml file is used to configure your HEMTT Project. All examples are done using JSON, but both files support every feature of HEMTT. hemtt.toml will be used if both files are present.",
-  "required": ["name", "prefix", "author"],
+  "required": [
+    "name",
+    "prefix",
+    "author"
+  ],
   "properties": {
     "name": {
       "$id": "#/properties/name",
       "type": "string",
       "default": "",
       "description": "Long name of your project.",
-      "examples": ["Advanced Banana Environment"],
+      "examples": [
+        "Advanced Banana Environment"
+      ],
       "pattern": "^(.*)$"
     },
     "prefix": {
@@ -18,7 +24,9 @@
       "type": "string",
       "default": "",
       "description": "Prefix used for CBA macros and the release directory name.",
-      "examples": ["ABE3"],
+      "examples": [
+        "ABE3"
+      ],
       "pattern": "^(.*)$"
     },
     "author": {
@@ -26,7 +34,9 @@
       "type": "string",
       "default": "",
       "description": "Author of the project.",
-      "examples": ["ACE Mod Team"],
+      "examples": [
+        "ACE Mod Team"
+      ],
       "pattern": "^(.*)$"
     },
     "version": {
@@ -34,7 +44,9 @@
       "type": "string",
       "default": "",
       "description": "HEMTT will look for ```addons/main/script_version.hpp``` and use it for the version number. If you are not using the CBA project structure or do not have that file you can add a version number in the HEMTT project file.",
-      "examples": ["1.0.0.0"],
+      "examples": [
+        "1.0.0.0"
+      ],
       "pattern": "^(.*)$"
     },
     "files": {
@@ -46,7 +58,11 @@
         "$id": "#/properties/files/items",
         "type": "string",
         "default": "",
-        "examples": ["mod.cpp", "logo.paa", "*.dll"],
+        "examples": [
+          "mod.cpp",
+          "logo.paa",
+          "*.dll"
+        ],
         "pattern": "^(.*)$"
       }
     },
@@ -59,7 +75,9 @@
         "$id": "#/properties/include/items",
         "type": "string",
         "default": "",
-        "examples": ["./include"],
+        "examples": [
+          "./include"
+        ],
         "pattern": "^(.*)$"
       }
     },
@@ -72,7 +90,11 @@
         "$id": "#/properties/exclude/items",
         "type": "string",
         "default": "",
-        "examples": ["*.psd", "*.png", "*.tga"],
+        "examples": [
+          "*.psd",
+          "*.png",
+          "*.tga"
+        ],
         "pattern": "^(.*)$"
       }
     },
@@ -85,7 +107,10 @@
         "$id": "#/properties/optionals/items",
         "type": "string",
         "default": "",
-        "examples": ["tracers", "particles"],
+        "examples": [
+          "tracers",
+          "particles"
+        ],
         "pattern": "^(.*)$"
       }
     },
@@ -94,7 +119,9 @@
       "type": "boolean",
       "description": "HEMTT will by default build optionals into their own mod folders, which can be directly launched by the user. This can be turned off to build optional PBOs directly into optionals folder.",
       "default": false,
-      "examples": [false]
+      "examples": [
+        false
+      ]
     },
     "skip": {
       "$id": "#/properties/skip",
@@ -105,7 +132,10 @@
         "$id": "#/properties/skip/items",
         "type": "string",
         "default": "",
-        "examples": ["hearing", "zeus"],
+        "examples": [
+          "hearing",
+          "zeus"
+        ],
         "pattern": "^(.*)$"
       }
     },
@@ -118,7 +148,9 @@
         "$id": "#/properties/headerexts/items",
         "type": "string",
         "default": "",
-        "examples": ["author=me"],
+        "examples": [
+          "author=me"
+        ],
         "pattern": "^(.*)$"
       }
     },
@@ -127,7 +159,9 @@
       "type": "string",
       "description": "HEMTT will use the specified mod name (without @) to form @mod folder. Supports templating.",
       "default": "",
-      "examples": ["my_mod"],
+      "examples": [
+        "my_mod"
+      ],
       "pattern": "^(.*)$"
     },
     "keyname": {
@@ -135,7 +169,9 @@
       "type": "string",
       "description": "HEMTT will use the specified key name for .bikey and .biprivatekey names. Supports templating.",
       "default": "",
-      "examples": ["my_key"],
+      "examples": [
+        "my_key"
+      ],
       "pattern": "^(.*)$"
     },
     "signame": {
@@ -143,7 +179,9 @@
       "type": "string",
       "description": "HEMTT will use the specified signature name as part of the full signature (.bisign) name. Supports templating.",
       "default": "",
-      "examples": ["my_custom_name"],
+      "examples": [
+        "my_custom_name"
+      ],
       "pattern": "^(.*)$"
     },
     "sigversion": {
@@ -151,14 +189,18 @@
       "type": "integer",
       "description": "HEMTT will use the specified signature version. Currently Supported: V2, V3 (Experiemental).",
       "default": 2,
-      "examples": [3]
+      "examples": [
+        3
+      ]
     },
     "reuse_private_key": {
       "$id": "#/properties/reuse_private_key",
       "type": "boolean",
       "description": "If set to true, HEMTT will use (and re-use) releases/keys/{keyname}.biprivatekey. It will be generated if it doesn't exist. The default behaviour is to generate a new private key each time and discard it immediately. HEMTT strongly recommends that you only re-use the key if you are making a client-side mod where it will not matter if clients are running different versions of the mod.",
       "default": false,
-      "examples": [false]
+      "examples": [
+        false
+      ]
     },
     "postbuild": {
       "$id": "#/properties/postbuild",
@@ -168,7 +210,9 @@
         "$id": "#/properties/postbuild/items",
         "type": "string",
         "default": "",
-        "examples": [""],
+        "examples": [
+          ""
+        ],
         "pattern": "^(.*)$"
       }
     },
@@ -180,7 +224,9 @@
         "$id": "#/properties/prebuild/items",
         "type": "string",
         "default": "",
-        "examples": [""],
+        "examples": [
+          ""
+        ],
         "pattern": "^(.*)$"
       }
     },
@@ -192,7 +238,9 @@
         "$id": "#/properties/releasebuild/items",
         "type": "string",
         "default": "",
-        "examples": [""],
+        "examples": [
+          ""
+        ],
         "pattern": "^(.*)$"
       }
     },
@@ -211,7 +259,9 @@
               "$id": "#/properties/scripts/properties//properties/steps/items",
               "type": "string",
               "default": "",
-              "examples": ["echo {{addon}} took {{time}} ms to build."],
+              "examples": [
+                "echo {{addon}} took {{time}} ms to build."
+              ],
               "pattern": "^(.*)$"
             }
           },
@@ -224,7 +274,9 @@
               "$id": "#/properties/scripts/properties//properties/steps_linux/items",
               "type": "string",
               "default": "",
-              "examples": [""],
+              "examples": [
+                ""
+              ],
               "pattern": "^(.*)$"
             }
           },
@@ -237,7 +289,9 @@
               "$id": "#/properties/scripts/properties//properties/steps_windows/items",
               "type": "string",
               "default": "",
-              "examples": [""],
+              "examples": [
+                ""
+              ],
               "pattern": "^(.*)$"
             }
           },
@@ -246,21 +300,27 @@
             "type": "boolean",
             "description": "All output is hidden by default. Setting show_output will display the command being executed and its output.",
             "default": false,
-            "examples": [true]
+            "examples": [
+              true
+            ]
           },
           "foreach": {
             "$id": "#/properties/scripts/properties//properties/foreach",
             "type": "boolean",
             "default": false,
             "description": "Scripts can be ran for each addons. Inside prebuild the script will be ran for each addon that HEMTT will build, including addons that will be skipped if they are already built. Inside postbuild and releasebuild only addons that were successfully built with be used, excluding addons that were skipped for being up to date.",
-            "examples": [true]
+            "examples": [
+              true
+            ]
           },
           "parallel": {
             "$id": "#/properties/scripts/properties//properties/parallel",
             "type": "boolean",
             "description": "Requires foreach to be true. If a script is thread safe parallel can be used to process multiple addons at a time.",
             "default": false,
-            "examples": [true]
+            "examples": [
+              true
+            ]
           }
         }
       }
