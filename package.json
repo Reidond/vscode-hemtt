@@ -3,6 +3,7 @@
   "displayName": "HEMTT",
   "description": "Use hemtt tool from your heavily themed VSCode",
   "version": "0.0.1",
+  "icon": "./resources/hemtt-small.png",
   "engines": {
     "vscode": "^1.36.0"
   },

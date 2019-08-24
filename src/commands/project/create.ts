@@ -1,38 +1,104 @@
 import * as vscode from "vscode";
+import * as fs from "fs";
+import { MultiStepInput } from "../../MultiStepInput";
 
 const config = vscode.workspace.getConfiguration("hemtt");
 
 export async function create(): Promise<void> {
-  const terminal = vscode.window.createTerminal();
+  const folderPath = vscode.workspace.rootPath;
 
+  const files = fs.readdirSync(folderPath!);
+
+  if (files.includes("mod.cpp")) {
+    vscode.window.showErrorMessage(
+      "The current directory already has a mod. Use init instead of create."
+    );
+    return;
+  }
+
+  const terminal = vscode.window.createTerminal();
   terminal.sendText("hemtt create");
 
-  const projectName = await vscode.window.showInputBox({
-    placeHolder: "Project Name (My Cool Mod)"
-  });
-  if (typeof projectName === "undefined") {
-    terminal.dispose();
-    return;
+  interface IState {
+    title: string;
+    step: number;
+    totalSteps: number;
+    projectName: string;
+    prefix: string;
+    author: string;
   }
-  terminal.sendText(projectName);
 
-  const prefix = await vscode.window.showInputBox({
-    placeHolder: "Prefix (MCM)"
-  });
-  if (typeof prefix === "undefined") {
-    terminal.dispose();
-    return;
+  async function collectInputs() {
+    const state: Partial<IState> = {};
+    await MultiStepInput.run(input => inputProjectName(input, state));
+    return state as IState;
   }
-  terminal.sendText(prefix);
 
-  const author = await vscode.window.showInputBox({
-    placeHolder: "Author (Me)"
-  });
-  if (typeof author === "undefined") {
-    terminal.dispose();
-    return;
+  const title = "Create HEMTT Project Structure";
+
+  async function inputProjectName(
+    input: MultiStepInput,
+    state: Partial<IState>
+  ) {
+    state.projectName = await input.showInputBox({
+      title,
+      step: 1,
+      totalSteps: 3,
+      value:
+        typeof state.projectName === "string"
+          ? state.projectName
+          : "My Cool Mod",
+      prompt: "Project Name (My Cool Mod)",
+      validate: validateNameIsUnique,
+      shouldResume
+    });
+    return (input: MultiStepInput) => inputPrefix(input, state);
   }
-  terminal.sendText(author);
+
+  async function inputPrefix(input: MultiStepInput, state: Partial<IState>) {
+    state.prefix = await input.showInputBox({
+      title,
+      step: 2,
+      totalSteps: 3,
+      value: typeof state.prefix === "string" ? state.prefix : "MCM",
+      prompt: "Prefix (MCM)",
+      validate: validateNameIsUnique,
+      shouldResume
+    });
+    return (input: MultiStepInput) => inputAuthor(input, state);
+  }
+
+  async function inputAuthor(input: MultiStepInput, state: Partial<IState>) {
+    state.author = await input.showInputBox({
+      title,
+      step: 3,
+      totalSteps: 3,
+      value: state.author || "Me",
+      prompt: "Author (Me)",
+      validate: validateNameIsUnique,
+      shouldResume
+    });
+  }
+
+  function shouldResume() {
+    // Could show a notification with the option to resume.
+    return new Promise<boolean>(() => {});
+  }
+
+  async function validateNameIsUnique(name: string) {
+    // ...validate...
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    return name === "vscode" ? "Name not unique" : undefined;
+  }
+
+  const state = await collectInputs();
+  vscode.window.showInformationMessage(
+    `Creating HEMTT Project Structure for '${state.projectName}'`
+  );
+
+  terminal.sendText(state.projectName);
+  terminal.sendText(state.prefix);
+  terminal.sendText(state.author);
 
   vscode.window.withProgress(
     {

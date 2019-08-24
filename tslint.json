@@ -6,12 +6,20 @@
     "no-implicit-dependencies": false,
     "curly": true,
     "class-name": true,
-    "semicolon": [true, "always"],
+    "semicolon": [
+      true,
+      "always"
+    ],
     "triple-equals": true,
     "no-empty": false,
     "no-namespace": false,
-    "object-literal-sort-keys": false
+    "object-literal-sort-keys": false,
+    "ordered-imports": false,
+    "no-shadowed-variable": false
   },
   "defaultSeverity": "warning",
-  "extends": ["tslint:latest", "tslint-config-prettier"]
+  "extends": [
+    "tslint:latest",
+    "tslint-config-prettier"
+  ]
 }
