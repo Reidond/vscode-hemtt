@@ -2,7 +2,8 @@
   "name": "hemtt",
   "displayName": "HEMTT",
   "description": "Use hemtt tool from your heavily themed VSCode",
-  "version": "0.0.1",
+  "version": "0.2.0",
+  "icon": "./resources/hemtt-small.png",
   "engines": {
     "vscode": "^1.36.0"
   },
@@ -15,14 +16,23 @@
     "url": "https://github.com/Reidond/vscode-hemtt"
   },
   "activationEvents": [
-    "onCommand:extension.helloWorld"
+    "onCommand:hemtt.project.create",
+    "onCommand:hemtt.project.init",
+    "workspaceContains:hemtt.json",
+    "workspaceContains:hemtt.toml"
   ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "extension.helloWorld",
-        "title": "Hello World"
+        "command": "hemtt.project.create",
+        "title": "Create Project",
+        "category": "HEMTT"
+      },
+      {
+        "command": "hemtt.project.init",
+        "title": "Init Project",
+        "category": "HEMTT"
       }
     ],
     "configuration": {
@@ -34,7 +44,13 @@
           "description": "Path to hemtt executable"
         }
       }
-    }
+    },
+    "jsonValidation": [
+      {
+        "fileMatch": "hemtt.*",
+        "url": "./schemas/hemtt-0.6.2.json"
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "webpack --mode production",
