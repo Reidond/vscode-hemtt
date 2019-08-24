@@ -37,6 +37,11 @@
         "command": "hemtt.project.init",
         "title": "Init Project",
         "category": "HEMTT"
+      },
+      {
+        "command": "hemtt.project.createAddon",
+        "title": "Create Addon",
+        "category": "HEMTT"
       }
     ],
     "configuration": {},
