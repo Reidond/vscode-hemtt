@@ -3,7 +3,11 @@
   "displayName": "HEMTT",
   "description": "Use hemtt tool from your heavily themed VSCode",
   "version": "0.2.0",
-  "icon": "./resources/hemtt-small.png",
+  "icon": "resources/hemtt-small.png",
+  "galleryBanner": {
+    "color": "#262626",
+    "theme": "dark"
+  },
   "engines": {
     "vscode": "^1.36.0"
   },
@@ -18,6 +22,7 @@
   "activationEvents": [
     "onCommand:hemtt.project.create",
     "onCommand:hemtt.project.init",
+    "onCommand:hemtt.project.createAddon",
     "workspaceContains:hemtt.json",
     "workspaceContains:hemtt.toml"
   ],
@@ -33,18 +38,14 @@
         "command": "hemtt.project.init",
         "title": "Init Project",
         "category": "HEMTT"
+      },
+      {
+        "command": "hemtt.project.createAddon",
+        "title": "Create Addon",
+        "category": "HEMTT"
       }
     ],
-    "configuration": {
-      "title": "HEMTT",
-      "properties": {
-        "hemtt.path": {
-          "type": "string",
-          "default": "",
-          "description": "Path to hemtt executable"
-        }
-      }
-    },
+    "configuration": {},
     "jsonValidation": [
       {
         "fileMatch": "hemtt.*",
