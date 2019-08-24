@@ -4,6 +4,10 @@
   "description": "Use hemtt tool from your heavily themed VSCode",
   "version": "0.2.0",
   "icon": "resources/hemtt-small.png",
+  "galleryBanner": {
+    "color": "#262626",
+    "theme": "dark"
+  },
   "engines": {
     "vscode": "^1.36.0"
   },
