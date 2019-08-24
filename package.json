@@ -22,6 +22,7 @@
   "activationEvents": [
     "onCommand:hemtt.project.create",
     "onCommand:hemtt.project.init",
+    "onCommand:hemtt.project.createAddon",
     "workspaceContains:hemtt.json",
     "workspaceContains:hemtt.toml"
   ],
