@@ -39,16 +39,7 @@
         "category": "HEMTT"
       }
     ],
-    "configuration": {
-      "title": "HEMTT",
-      "properties": {
-        "hemtt.path": {
-          "type": "string",
-          "default": "",
-          "description": "Path to hemtt executable"
-        }
-      }
-    },
+    "configuration": {},
     "jsonValidation": [
       {
         "fileMatch": "hemtt.*",
