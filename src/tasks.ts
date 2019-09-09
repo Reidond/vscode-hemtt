@@ -282,9 +282,9 @@ async function provideHemttScriptsForFolder(
         if (prePostScripts.has(each)) {
             task.group = TaskGroup.Clean; // hack: use Clean group to tag pre/post scripts
         }
-        if (isDebugScript(scripts![each])) {
-            task.group = TaskGroup.Rebuild; // hack: use Rebuild group to tag debug scripts
-        }
+        // if (isDebugScript(scripts![each])) {
+        //     task.group = TaskGroup.Rebuild; // hack: use Rebuild group to tag debug scripts
+        // }
         result.push(task);
     });
     // always add npm install (without a problem matcher)
@@ -407,7 +407,13 @@ export function runScript(script: string, document: TextDocument) {
 }
 
 export interface IStringMap {
-    [s: string]: string;
+    [s: string]: IHEMTTScript;
+}
+
+export interface IHEMTTScript {
+    steps: string[];
+    steps_windows: string[];
+    steps_linux: string[];
 }
 
 async function findAllScripts(buffer: string): Promise<IStringMap> {
@@ -427,7 +433,7 @@ async function findAllScripts(buffer: string): Promise<IStringMap> {
         onLiteralValue(value: any, _offset: number, _length: number) {
             if (script) {
                 if (typeof value === "string") {
-                    scripts[script] = value;
+                    //scripts[script] = value;
                 }
                 script = undefined;
             }

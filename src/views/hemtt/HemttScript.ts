@@ -26,7 +26,7 @@ export class HemttScript extends TreeItem {
         super(task.name, TreeItemCollapsibleState.None);
         const command: ExplorerCommands =
             workspace
-                .getConfiguration("npm")
+                .getConfiguration("hemtt")
                 .get<ExplorerCommands>("scriptExplorerAction") || "open";
 
         const commandList = {
