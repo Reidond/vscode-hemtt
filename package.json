@@ -23,6 +23,8 @@
     "onCommand:hemtt.project.create",
     "onCommand:hemtt.project.init",
     "onCommand:hemtt.project.createAddon",
+    "onCommand:hemtt.project.createFunctionOnPick",
+    "onCommand:hemtt.project.createFunctionOnContext",
     "workspaceContains:hemtt.json",
     "workspaceContains:hemtt.toml"
   ],
@@ -43,8 +45,33 @@
         "command": "hemtt.project.createAddon",
         "title": "Create Addon",
         "category": "HEMTT"
+      },
+      {
+        "command": "hemtt.project.createFunctionOnPick",
+        "title": "Create Function",
+        "category": "HEMTT"
+      },
+      {
+        "command": "hemtt.project.createFunctionOnContext",
+        "title": "New Function",
+        "category": "HEMTT"
       }
     ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "hemtt.project.createFunctionOnContext",
+          "when": "false"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "hemtt.project.createFunctionOnContext",
+          "when": "explorerResourceIsFolder && resourceFilename == functions",
+          "group": "navigation@1"
+        }
+      ]
+    },
     "configuration": {},
     "jsonValidation": [
       {
