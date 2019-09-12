@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import * as fs from "fs";
 import * as path from "path";
-import { MultiStepInput } from "../../MultiStepInput";
+import { MultiStepInput } from "@utils/MultiStepInput";
 
 const config = vscode.workspace.getConfiguration("hemtt");
 
@@ -34,7 +34,10 @@ export async function createAddon() {
 
     const title = "Create HEMTT Addon";
 
-    async function inputAddonName(input: MultiStepInput, state: Partial<IState>) {
+    async function inputAddonName(
+        input: MultiStepInput,
+        state: Partial<IState>
+    ) {
         state.addonName = await input.showInputBox({
             title,
             step: 1,
@@ -48,7 +51,7 @@ export async function createAddon() {
 
     function shouldResume() {
         // Could show a notification with the option to resume.
-        return new Promise<boolean>(() => { });
+        return new Promise<boolean>(() => {});
     }
 
     async function validateNameIsUnique(name: string) {

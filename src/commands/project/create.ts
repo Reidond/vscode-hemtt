@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import * as fs from "fs";
-import { MultiStepInput } from "../../MultiStepInput";
+import { MultiStepInput } from "@utils/MultiStepInput";
 
 const config = vscode.workspace.getConfiguration("hemtt");
 
@@ -82,7 +82,7 @@ export async function create(): Promise<void> {
 
     function shouldResume() {
         // Could show a notification with the option to resume.
-        return new Promise<boolean>(() => { });
+        return new Promise<boolean>(() => {});
     }
 
     async function validateNameIsUnique(name: string) {

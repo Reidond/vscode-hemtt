@@ -4,7 +4,7 @@ export class InputFlowAction {
     public static back = new InputFlowAction();
     public static cancel = new InputFlowAction();
     public static resume = new InputFlowAction();
-    private constructor() { }
+    private constructor() {}
 }
 
 export interface IQuickPickParameters<T extends QuickPickItem> {
