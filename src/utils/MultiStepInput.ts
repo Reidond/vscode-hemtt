@@ -8,8 +8,10 @@ import {
 import {
     IQuickPickParameters,
     IInputBoxParameters,
-    InputFlowAction
+    InputFlowAction,
+    IFilteredQuickPickParameters
 } from "./InputFlowAction";
+import { isArray } from "util";
 
 type InputStep = (input: MultiStepInput) => Thenable<InputStep | void>;
 
@@ -54,6 +56,89 @@ export class MultiStepInput {
                     ...(buttons || [])
                 ];
                 disposables.push(
+                    input.onDidTriggerButton(item => {
+                        if (item === QuickInputButtons.Back) {
+                            reject(InputFlowAction.back);
+                        } else {
+                            resolve(item as any);
+                        }
+                    }),
+                    input.onDidChangeSelection(selectionItems =>
+                        resolve(selectionItems[0])
+                    ),
+                    input.onDidHide(() => {
+                        (async () => {
+                            reject(
+                                shouldResume && (await shouldResume())
+                                    ? InputFlowAction.resume
+                                    : InputFlowAction.cancel
+                            );
+                        })().catch(reject);
+                    })
+                );
+                if (this.current) {
+                    this.current.dispose();
+                }
+                this.current = input;
+                this.current.show();
+            });
+        } finally {
+            disposables.forEach(d => d.dispose());
+        }
+    }
+
+    public async showFilteredQuickPick<
+        T extends QuickPickItem,
+        P extends IFilteredQuickPickParameters<T>
+    >({
+        title,
+        step,
+        totalSteps,
+        items,
+        filteredItems,
+        activeItem,
+        placeholder,
+        buttons,
+        shouldResume
+    }: P) {
+        const disposables: Disposable[] = [];
+        try {
+            return await new Promise<
+                T | (P extends { buttons: Array<infer I> } ? I : never)
+            >((resolve, reject) => {
+                const input = window.createQuickPick<T>();
+                input.title = title;
+                input.step = step;
+                input.totalSteps = totalSteps;
+                input.placeholder = placeholder;
+                input.items = items;
+                input.ignoreFocusOut = true;
+                if (activeItem) {
+                    input.activeItems = [activeItem];
+                }
+                input.buttons = [
+                    ...(this.steps.length > 1 ? [QuickInputButtons.Back] : []),
+                    ...(buttons || [])
+                ];
+                const updateQuickPick = (value?: string): void => {
+                    if (value) {
+                        switch (value.charAt(0)) {
+                            case "@":
+                                input.items = input.items.concat(filteredItems);
+                                break;
+
+                            case "fnc_":
+                                input.selectedItems = items;
+                                break;
+
+                            default:
+                                input.selectedItems = items;
+                                break;
+                        }
+                    }
+                };
+                disposables.push(
+                    input.onDidChangeValue(updateQuickPick),
                     input.onDidTriggerButton(item => {
                         if (item === QuickInputButtons.Back) {
                             reject(InputFlowAction.back);

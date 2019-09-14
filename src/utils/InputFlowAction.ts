@@ -18,6 +18,11 @@ export interface IQuickPickParameters<T extends QuickPickItem> {
     shouldResume: () => Thenable<boolean>;
 }
 
+export interface IFilteredQuickPickParameters<T extends QuickPickItem>
+    extends IQuickPickParameters<T> {
+    filteredItems: T[];
+}
+
 export interface IInputBoxParameters {
     title: string;
     step: number;
