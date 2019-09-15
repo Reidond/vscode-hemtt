@@ -95,7 +95,7 @@ export class MultiStepInput {
         step,
         totalSteps,
         items,
-        filteredItems,
+        // filteredItems,
         activeItem,
         placeholder,
         buttons,
@@ -106,50 +106,41 @@ export class MultiStepInput {
             return await new Promise<
                 T | (P extends { buttons: Array<infer I> } ? I : never)
             >((resolve, reject) => {
-                const input = window.createQuickPick<T>();
-                input.title = title;
-                input.step = step;
-                input.totalSteps = totalSteps;
-                input.placeholder = placeholder;
-                input.items = items;
-                input.ignoreFocusOut = true;
+                const cqp = window.createQuickPick<T>();
+                cqp.title = title;
+                cqp.step = step;
+                cqp.totalSteps = totalSteps;
+                cqp.placeholder = placeholder;
+                cqp.items = items;
+                cqp.ignoreFocusOut = true;
                 if (activeItem) {
-                    input.activeItems = [activeItem];
+                    cqp.activeItems = [activeItem];
                 }
-                input.buttons = [
+                cqp.buttons = [
                     ...(this.steps.length > 1 ? [QuickInputButtons.Back] : []),
                     ...(buttons || [])
                 ];
                 const updateQuickPick = (value?: string): void => {
-                    if (value) {
-                        switch (value.charAt(0)) {
-                            case "@":
-                                input.items = input.items.concat(filteredItems);
-                                break;
-
-                            case "fnc_":
-                                input.selectedItems = items;
-                                break;
-
-                            default:
-                                input.selectedItems = items;
-                                break;
-                        }
+                    if (
+                        typeof value !== "undefined" &&
+                        value.charAt(0) === "@"
+                    ) {
+                        console.log(cqp.activeItems);
                     }
                 };
                 disposables.push(
-                    input.onDidChangeValue(updateQuickPick),
-                    input.onDidTriggerButton(item => {
+                    cqp.onDidChangeValue(updateQuickPick),
+                    cqp.onDidTriggerButton(item => {
                         if (item === QuickInputButtons.Back) {
                             reject(InputFlowAction.back);
                         } else {
                             resolve(item as any);
                         }
                     }),
-                    input.onDidChangeSelection(selectionItems =>
+                    cqp.onDidChangeSelection(selectionItems =>
                         resolve(selectionItems[0])
                     ),
-                    input.onDidHide(() => {
+                    cqp.onDidHide(() => {
                         (async () => {
                             reject(
                                 shouldResume && (await shouldResume())
@@ -162,7 +153,7 @@ export class MultiStepInput {
                 if (this.current) {
                     this.current.dispose();
                 }
-                this.current = input;
+                this.current = cqp;
                 this.current.show();
             });
         } finally {

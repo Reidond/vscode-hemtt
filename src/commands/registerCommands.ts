@@ -2,8 +2,10 @@ import { commands, ExtensionContext } from "vscode";
 import { create } from "./project/create";
 import { init } from "./project/init";
 import { createAddon } from "./project/createAddon";
-import { createFunctionOnPick } from "./project/createFunctionOnPick";
+import { createFunctionOnPalette } from "./project/createFunctionOnPalette";
 import { createFunctionOnContext } from "./project/createFunctionOnContext";
+import { deleteFunctionOnPalette } from "./project/deleteFunctionOnPalette";
+import { deleteFunctionOnContext } from "./project/deleteFunctionOnContext";
 
 export function registerCommands(context: ExtensionContext): void {
     context.subscriptions.push(
@@ -17,14 +19,26 @@ export function registerCommands(context: ExtensionContext): void {
     );
     context.subscriptions.push(
         commands.registerCommand(
-            "hemtt.project.createFunctionOnPick",
-            createFunctionOnPick
+            "hemtt.project.createFunctionOnPalette",
+            createFunctionOnPalette
         )
     );
     context.subscriptions.push(
         commands.registerCommand(
             "hemtt.project.createFunctionOnContext",
             createFunctionOnContext
+        )
+    );
+    context.subscriptions.push(
+        commands.registerCommand(
+            "hemtt.project.deleteFunctionOnPalette",
+            deleteFunctionOnPalette
+        )
+    );
+    context.subscriptions.push(
+        commands.registerCommand(
+            "hemtt.project.deleteFunctionOnContext",
+            deleteFunctionOnContext
         )
     );
 }

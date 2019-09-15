@@ -9,7 +9,7 @@ import {
 } from "vscode";
 import { createFunction } from "@shared/createFunction";
 
-export async function createFunctionOnPick() {
+export async function createFunctionOnPalette() {
     const folderPath = workspace.rootPath;
     const rootPath = await workspace.fs.readDirectory(Uri.file(folderPath!));
     const title = "Create HEMTT Function";

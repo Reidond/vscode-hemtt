@@ -23,7 +23,7 @@
     "onCommand:hemtt.project.create",
     "onCommand:hemtt.project.init",
     "onCommand:hemtt.project.createAddon",
-    "onCommand:hemtt.project.createFunctionOnPick",
+    "onCommand:hemtt.project.createFunctionOnPalette",
     "onCommand:hemtt.project.createFunctionOnContext",
     "workspaceContains:hemtt.json",
     "workspaceContains:hemtt.toml"
@@ -47,13 +47,23 @@
         "category": "HEMTT"
       },
       {
-        "command": "hemtt.project.createFunctionOnPick",
+        "command": "hemtt.project.createFunctionOnPalette",
         "title": "Create Function",
         "category": "HEMTT"
       },
       {
         "command": "hemtt.project.createFunctionOnContext",
         "title": "New Function",
+        "category": "HEMTT"
+      },
+      {
+        "command": "hemtt.project.deleteFunctionOnPalette",
+        "title": "Delete Function",
+        "category": "HEMTT"
+      },
+      {
+        "command": "hemtt.project.createFunctionOnContext",
+        "title": "Delete Function",
         "category": "HEMTT"
       }
     ],
@@ -62,6 +72,10 @@
         {
           "command": "hemtt.project.createFunctionOnContext",
           "when": "false"
+        },
+        {
+          "command": "hemtt.project.deleteFunctionOnContext",
+          "when": "false"
         }
       ],
       "explorer/context": [
@@ -69,6 +83,11 @@
           "command": "hemtt.project.createFunctionOnContext",
           "when": "explorerResourceIsFolder && resourceFilename == functions",
           "group": "navigation@1"
+        },
+        {
+          "command": "hemtt.project.deleteFunctionOnContext",
+          "when": "explorerResourceIsFolder && resourceFilename == functions",
+          "group": "navigation@2"
         }
       ]
     },
