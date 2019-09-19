@@ -8,37 +8,37 @@ import { deleteFunctionOnPalette } from "./project/deleteFunctionOnPalette";
 import { deleteFunctionOnContext } from "./project/deleteFunctionOnContext";
 
 export function registerCommands(context: ExtensionContext): void {
-    context.subscriptions.push(
-        commands.registerCommand("hemtt.project.create", create)
-    );
-    context.subscriptions.push(
-        commands.registerCommand("hemtt.project.init", init)
-    );
-    context.subscriptions.push(
-        commands.registerCommand("hemtt.project.createAddon", createAddon)
-    );
-    context.subscriptions.push(
-        commands.registerCommand(
-            "hemtt.project.createFunctionOnPalette",
-            createFunctionOnPalette
-        )
-    );
-    context.subscriptions.push(
-        commands.registerCommand(
-            "hemtt.project.createFunctionOnContext",
-            createFunctionOnContext
-        )
-    );
-    context.subscriptions.push(
-        commands.registerCommand(
-            "hemtt.project.deleteFunctionOnPalette",
-            deleteFunctionOnPalette
-        )
-    );
-    context.subscriptions.push(
-        commands.registerCommand(
-            "hemtt.project.deleteFunctionOnContext",
-            deleteFunctionOnContext
-        )
-    );
+  context.subscriptions.push(
+    commands.registerCommand("hemtt.project.create", create)
+  );
+  context.subscriptions.push(
+    commands.registerCommand("hemtt.project.init", init)
+  );
+  context.subscriptions.push(
+    commands.registerCommand("hemtt.project.createAddon", createAddon)
+  );
+  context.subscriptions.push(
+    commands.registerCommand(
+      "hemtt.project.createFunctionOnPalette",
+      createFunctionOnPalette
+    )
+  );
+  context.subscriptions.push(
+    commands.registerCommand(
+      "hemtt.project.createFunctionOnContext",
+      createFunctionOnContext
+    )
+  );
+  context.subscriptions.push(
+    commands.registerCommand(
+      "hemtt.project.deleteFunctionOnPalette",
+      deleteFunctionOnPalette
+    )
+  );
+  context.subscriptions.push(
+    commands.registerCommand(
+      "hemtt.project.deleteFunctionOnContext",
+      deleteFunctionOnContext
+    )
+  );
 }
