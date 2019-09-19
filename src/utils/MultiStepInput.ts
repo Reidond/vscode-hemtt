@@ -11,7 +11,6 @@ import {
     InputFlowAction,
     IFilteredQuickPickParameters
 } from "./InputFlowAction";
-import { isArray } from "util";
 
 type InputStep = (input: MultiStepInput) => Thenable<InputStep | void>;
 
@@ -42,31 +41,31 @@ export class MultiStepInput {
             return await new Promise<
                 T | (P extends { buttons: Array<infer I> } ? I : never)
             >((resolve, reject) => {
-                const input = window.createQuickPick<T>();
-                input.title = title;
-                input.step = step;
-                input.totalSteps = totalSteps;
-                input.placeholder = placeholder;
-                input.items = items;
+                const cqp = window.createQuickPick<T>();
+                cqp.title = title;
+                cqp.step = step;
+                cqp.totalSteps = totalSteps;
+                cqp.placeholder = placeholder;
+                cqp.items = items;
                 if (activeItem) {
-                    input.activeItems = [activeItem];
+                    cqp.activeItems = [activeItem];
                 }
-                input.buttons = [
+                cqp.buttons = [
                     ...(this.steps.length > 1 ? [QuickInputButtons.Back] : []),
                     ...(buttons || [])
                 ];
                 disposables.push(
-                    input.onDidTriggerButton(item => {
+                    cqp.onDidTriggerButton(item => {
                         if (item === QuickInputButtons.Back) {
                             reject(InputFlowAction.back);
                         } else {
                             resolve(item as any);
                         }
                     }),
-                    input.onDidChangeSelection(selectionItems =>
+                    cqp.onDidChangeSelection(selectionItems =>
                         resolve(selectionItems[0])
                     ),
-                    input.onDidHide(() => {
+                    cqp.onDidHide(() => {
                         (async () => {
                             reject(
                                 shouldResume && (await shouldResume())
@@ -79,7 +78,7 @@ export class MultiStepInput {
                 if (this.current) {
                     this.current.dispose();
                 }
-                this.current = input;
+                this.current = cqp;
                 this.current.show();
             });
         } finally {
@@ -176,44 +175,44 @@ export class MultiStepInput {
             return await new Promise<
                 string | (P extends { buttons: Array<infer I> } ? I : never)
             >((resolve, reject) => {
-                const input = window.createInputBox();
-                input.title = title;
-                input.step = step;
-                input.totalSteps = totalSteps;
-                input.value = value || "";
-                input.prompt = prompt;
-                input.buttons = [
+                const cqp = window.createInputBox();
+                cqp.title = title;
+                cqp.step = step;
+                cqp.totalSteps = totalSteps;
+                cqp.value = value || "";
+                cqp.prompt = prompt;
+                cqp.buttons = [
                     ...(this.steps.length > 1 ? [QuickInputButtons.Back] : []),
                     ...(buttons || [])
                 ];
                 let validating = validate("");
                 disposables.push(
-                    input.onDidTriggerButton(item => {
+                    cqp.onDidTriggerButton(item => {
                         if (item === QuickInputButtons.Back) {
                             reject(InputFlowAction.back);
                         } else {
                             resolve(item as any);
                         }
                     }),
-                    input.onDidAccept(async () => {
-                        const inputValue = input.value;
-                        input.enabled = false;
-                        input.busy = true;
+                    cqp.onDidAccept(async () => {
+                        const inputValue = cqp.value;
+                        cqp.enabled = false;
+                        cqp.busy = true;
                         if (!(await validate(inputValue))) {
                             resolve(inputValue);
                         }
-                        input.enabled = true;
-                        input.busy = false;
+                        cqp.enabled = true;
+                        cqp.busy = false;
                     }),
-                    input.onDidChangeValue(async text => {
+                    cqp.onDidChangeValue(async text => {
                         const current = validate(text);
                         validating = current;
                         const validationMessage = await current;
                         if (current === validating) {
-                            input.validationMessage = validationMessage;
+                            cqp.validationMessage = validationMessage;
                         }
                     }),
-                    input.onDidHide(() => {
+                    cqp.onDidHide(() => {
                         (async () => {
                             reject(
                                 shouldResume && (await shouldResume())
@@ -226,7 +225,7 @@ export class MultiStepInput {
                 if (this.current) {
                     this.current.dispose();
                 }
-                this.current = input;
+                this.current = cqp;
                 this.current.show();
             });
         } finally {
