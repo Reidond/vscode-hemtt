@@ -25,6 +25,8 @@
     "onCommand:hemtt.project.createAddon",
     "onCommand:hemtt.project.createFunctionOnPalette",
     "onCommand:hemtt.project.createFunctionOnContext",
+    "onCommand:hemtt.project.deleteFunctionOnPalette",
+    "onCommand:hemtt.project.deleteFunctionOnContext",
     "workspaceContains:hemtt.json",
     "workspaceContains:hemtt.toml"
   ],
@@ -62,7 +64,7 @@
         "category": "HEMTT"
       },
       {
-        "command": "hemtt.project.createFunctionOnContext",
+        "command": "hemtt.project.deleteFunctionOnContext",
         "title": "Delete Function",
         "category": "HEMTT"
       }

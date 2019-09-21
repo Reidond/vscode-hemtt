@@ -86,6 +86,7 @@ export class MultiStepInput {
     }
   }
 
+  // !# WIP: Dont use this
   public async showFilteredQuickPick<
     T extends QuickPickItem,
     P extends IFilteredQuickPickParameters<T>
@@ -122,7 +123,12 @@ export class MultiStepInput {
         disposables.push(
           cqp.onDidChangeValue((value?: string): void => {
             if (typeof value !== "undefined" && value.charAt(0) === "@") {
-              console.log(cqp.activeItems);
+              const replacedValue = cqp.value.replace("@", "");
+              cqp.value = replacedValue;
+            }
+            if (typeof value !== "undefined" && value.charAt(0) === "#") {
+              const replacedValue = cqp.value.replace("#", "");
+              cqp.value = replacedValue;
             }
           }),
           cqp.onDidTriggerButton(item => {
