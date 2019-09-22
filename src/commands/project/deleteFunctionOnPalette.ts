@@ -45,13 +45,12 @@ export async function deleteFunctionOnPalette() {
       undefined /* TODO: token */
     );
     const items: QuickPickItem[] = [];
-    items.concat(addons, functions);
     state.addon = await input.showQuickPick({
       title,
       step: 1,
       totalSteps: 2,
       placeholder: "Pick A Addon",
-      items,
+      items: items.concat(addons, functions),
       activeItem: state.addon,
       shouldResume
     });
@@ -113,9 +112,32 @@ export async function deleteFunctionOnPalette() {
       Uri.file(`${folderPath}/addons`)
     );
     const addons = addonsFolders.filter(
-      ([_, fileType]) => fileType === FileType.File
+      ([_, fileType]) => fileType === FileType.Directory
     );
-    return addons.map(([addon, _]) => ({ label: addon }));
+
+    const functions: Array<[string, FileType]> = [];
+    addons.forEach(async ([addon, _]) => {
+      const addonContent = await workspace.fs.readDirectory(
+        Uri.file(`${folderPath}/addons/${addon}`)
+      );
+      if (
+        addonContent.find(folder => folder[0] === "functions") !== undefined
+      ) {
+        const functionContent = await workspace.fs.readDirectory(
+          Uri.file(`${folderPath}/addons/${addon}/functions`)
+        );
+        functionContent.forEach(func => {
+          const fileExtension =
+            func[0].substring(func[0].lastIndexOf(".") + 1, func[0].length) ||
+            func;
+          if (fileExtension === "sqf") {
+            functions.push(func);
+          }
+        });
+      }
+    });
+
+    return functions.map(([func, _]) => ({ label: func }));
   }
 
   const state = await collectInputs();
