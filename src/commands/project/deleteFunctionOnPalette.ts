@@ -109,7 +109,16 @@ export async function deleteFunctionOnPalette() {
     const addons = addonsFolders.filter(
       ([_, fileType]) => fileType === FileType.Directory
     );
-    return addons.map(([addon, _]) => ({ label: `@${addon}` }));
+    const functionlessAddons: Array<[string, FileType]> = [];
+    for (const addon of addons) {
+      const addonContent = await workspace.fs.readDirectory(
+        Uri.file(`${folderPath}/addons/${addon[0]}`)
+      );
+      if (addonContent.find(folder => folder[0] === "functions")) {
+        functionlessAddons.push(addon);
+      }
+    }
+    return functionlessAddons.map(([addon, _]) => ({ label: `@${addon}` }));
   }
 
   async function searchAllFunctions(
