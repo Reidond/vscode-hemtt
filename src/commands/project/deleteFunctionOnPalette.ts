@@ -29,7 +29,7 @@ export async function deleteFunctionOnPalette() {
     step: number;
     totalSteps: number;
     addon: QuickPickItem;
-    functionName: string;
+    functionName: QuickPickItem;
     resourceGroup: QuickPickItem | string;
   }
 
@@ -40,14 +40,8 @@ export async function deleteFunctionOnPalette() {
   }
 
   async function pickAddon(input: MultiStepInput, state: Partial<IState>) {
-    const addons = await getAvailableAddons(
-      state.resourceGroup!,
-      undefined /* TODO: token */
-    );
-    const functions = await searchAllFunctions(
-      state.resourceGroup!,
-      undefined /* TODO: token */
-    );
+    const addons = await getAvailableAddons(state.resourceGroup!, undefined);
+    const functions = await searchAllFunctions(state.resourceGroup!, undefined);
     const items: QuickPickItem[] = [];
     state.addon = await input.showQuickPick({
       title,
@@ -62,23 +56,25 @@ export async function deleteFunctionOnPalette() {
       typeof state.addon !== "undefined" &&
       state.addon.label.charAt(0) === "@"
     ) {
-      return (input: MultiStepInput) => inputFunctionName(input, state);
+      return (input: MultiStepInput) => pickFunction(input, state);
     } else {
       return undefined;
     }
   }
 
-  async function inputFunctionName(
-    input: MultiStepInput,
-    state: Partial<IState>
-  ) {
-    state.functionName = await input.showInputBox({
+  async function pickFunction(input: MultiStepInput, state: Partial<IState>) {
+    const functions = await getAvailableFunctions(
+      state.addon,
+      state.resourceGroup!,
+      undefined
+    );
+    state.functionName = await input.showQuickPick({
       title,
-      step: 2,
+      step: 1,
       totalSteps: 2,
-      value: typeof state.functionName === "string" ? state.functionName : "",
-      prompt: "Enter Function Name",
-      validate: validateFunctionIsUnique.bind(state),
+      placeholder: "Pick A Function",
+      items: functions,
+      activeItem: state.functionName,
       shouldResume
     });
   }
@@ -86,20 +82,6 @@ export async function deleteFunctionOnPalette() {
   function shouldResume() {
     // Could show a notification with the option to resume.
     return new Promise<boolean>(() => {});
-  }
-
-  async function validateFunctionIsUnique(
-    this: Partial<IState>,
-    functionName: string
-  ) {
-    const addonLabel = this.addon!.label;
-    const functions = await workspace.fs.readDirectory(
-      Uri.file(`${folderPath}/addons/${addonLabel}/functions`)
-    );
-    const statement =
-      functions.find(file => file[0] === `fnc_${functionName}.sqf`) !==
-      undefined;
-    return statement ? "Function already present!" : undefined;
   }
 
   async function getAvailableAddons(
@@ -122,6 +104,27 @@ export async function deleteFunctionOnPalette() {
       }
     }
     return functionlessAddons.map(([addon, _]) => ({ label: `@${addon}` }));
+  }
+
+  async function getAvailableFunctions(
+    addon: QuickPickItem | undefined,
+    _resourceGroup: QuickPickItem | string,
+    _token?: CancellationToken
+  ): Promise<QuickPickItem[]> {
+    const rawFunctions = await workspace.fs.readDirectory(
+      Uri.file(
+        `${workspaceFolderPath}/addons/${addon!.label.substring(1)}/functions`
+      )
+    );
+    const notFunctions = rawFunctions.filter(
+      ([_, fileType]) => fileType === FileType.File
+    );
+    const functions = notFunctions.filter(([func, _]) => {
+      const fileExtension =
+        func.substring(func.lastIndexOf(".") + 1, func.length) || func;
+      return fileExtension === "sqf";
+    });
+    return functions.map(([func, _]) => ({ label: `${func}` }));
   }
 
   async function searchAllFunctions(
