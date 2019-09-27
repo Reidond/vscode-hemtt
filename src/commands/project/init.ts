@@ -8,9 +8,10 @@ export async function init() {
   const terminal = vscode.window.createTerminal();
   terminal.sendText("hemtt init");
 
-  const folderPath = vscode.workspace.rootPath;
+  const workspaceFolder = vscode.workspace.workspaceFolders![0];
+  const workspaceFolderPath = workspaceFolder.uri.path;
 
-  const files = fs.readdirSync(folderPath!);
+  const files = fs.readdirSync(workspaceFolderPath!);
 
   if (files.includes("hemtt.json")) {
     vscode.window.showErrorMessage(

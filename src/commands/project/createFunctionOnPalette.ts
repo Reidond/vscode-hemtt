@@ -10,8 +10,11 @@ import {
 import { createFunction } from "@shared/createFunction";
 
 export async function createFunctionOnPalette() {
-  const folderPath = workspace.rootPath;
-  const rootPath = await workspace.fs.readDirectory(Uri.file(folderPath!));
+  const workspaceFolder = workspace.workspaceFolders![0];
+  const workspaceFolderPath = workspaceFolder.uri.path;
+  const rootPath = await workspace.fs.readDirectory(
+    Uri.file(workspaceFolderPath)
+  );
   const title = "Create HEMTT Function";
 
   if (rootPath.find(file => file[0] === "hemtt.json") === undefined) {
@@ -79,7 +82,7 @@ export async function createFunctionOnPalette() {
   ) {
     const addonLabel = this.addon!.label;
     const functions = await workspace.fs.readDirectory(
-      Uri.file(`${folderPath}/addons/${addonLabel}/functions`)
+      Uri.file(`${workspaceFolderPath}/addons/${addonLabel}/functions`)
     );
     const statement =
       functions.find(file => file[0] === `fnc_${functionName}.sqf`) !==
@@ -92,7 +95,7 @@ export async function createFunctionOnPalette() {
     _token?: CancellationToken
   ): Promise<QuickPickItem[]> {
     const addonsFolders = await workspace.fs.readDirectory(
-      Uri.file(`${folderPath}/addons`)
+      Uri.file(`${workspaceFolderPath}/addons`)
     );
     const addons = addonsFolders.filter(
       ([_, fileType]) => fileType === FileType.Directory

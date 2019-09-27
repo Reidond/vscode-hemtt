@@ -8,9 +8,10 @@ const config = vscode.workspace.getConfiguration("hemtt");
 export async function createAddon() {
   const terminal = vscode.window.createTerminal();
 
-  const folderPath = vscode.workspace.rootPath;
+  const workspaceFolder = vscode.workspace.workspaceFolders![0];
+  const workspaceFolderPath = workspaceFolder.uri.path;
 
-  const files = fs.readdirSync(folderPath!);
+  const files = fs.readdirSync(workspaceFolderPath!);
 
   if (!files.includes("hemtt.json")) {
     vscode.window.showErrorMessage(
@@ -59,7 +60,7 @@ export async function createAddon() {
 
   const state = await collectInputs();
 
-  const addons = fs.readdirSync(`${folderPath!}${path.sep}addons`);
+  const addons = fs.readdirSync(`${workspaceFolderPath!}${path.sep}addons`);
 
   if (addons.includes(state.addonName)) {
     vscode.window.showErrorMessage(`${state.addonName} already exists`);

@@ -7,8 +7,11 @@ export async function createFunctionOnContext(dir: Uri) {
   dirArr.pop();
   const [addon] = dirArr.slice(-1);
 
-  const folderPath = workspace.rootPath;
-  const rootPath = await workspace.fs.readDirectory(Uri.file(folderPath!));
+  const workspaceFolder = workspace.workspaceFolders![0];
+  const workspaceFolderPath = workspaceFolder.uri.path;
+  const rootPath = await workspace.fs.readDirectory(
+    Uri.file(workspaceFolderPath)
+  );
   const title = "Create HEMTT Function";
 
   if (rootPath.find(file => file[0] === "hemtt.json") === undefined) {
@@ -56,7 +59,7 @@ export async function createFunctionOnContext(dir: Uri) {
     functionName: string
   ) {
     const functions = await workspace.fs.readDirectory(
-      Uri.file(`${folderPath}/addons/${addon}/functions`)
+      Uri.file(`${workspaceFolderPath}/addons/${addon}/functions`)
     );
     const statement =
       functions.find(file => file[0] === `fnc_${functionName}.sqf`) !==

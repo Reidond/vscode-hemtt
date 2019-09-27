@@ -8,9 +8,10 @@ export async function create(): Promise<void> {
   const terminal = vscode.window.createTerminal();
   terminal.sendText("hemtt create");
 
-  const folderPath = vscode.workspace.rootPath;
+  const workspaceFolder = vscode.workspace.workspaceFolders![0];
+  const workspaceFolderPath = workspaceFolder.uri.path;
 
-  const files = fs.readdirSync(folderPath!);
+  const files = fs.readdirSync(workspaceFolderPath!);
 
   if (files.includes("mod.cpp")) {
     vscode.window.showErrorMessage(

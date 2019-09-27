@@ -10,8 +10,11 @@ import { MultiStepInput } from "@utils/MultiStepInput";
 import { TextDecoder, TextEncoder } from "util";
 
 export async function deleteFunctionOnPalette() {
-  const folderPath = workspace.rootPath;
-  const rootPath = await workspace.fs.readDirectory(Uri.file(folderPath!));
+  const workspaceFolder = workspace.workspaceFolders![0];
+  const workspaceFolderPath = workspaceFolder.uri.path;
+  const rootPath = await workspace.fs.readDirectory(
+    Uri.file(workspaceFolderPath)
+  );
   const title = "Delete HEMTT Function";
 
   if (rootPath.find(file => file[0] === "hemtt.json") === undefined) {
@@ -104,7 +107,7 @@ export async function deleteFunctionOnPalette() {
     _token?: CancellationToken
   ): Promise<QuickPickItem[]> {
     const addonsFolders = await workspace.fs.readDirectory(
-      Uri.file(`${folderPath}/addons`)
+      Uri.file(`${workspaceFolderPath}/addons`)
     );
     const addons = addonsFolders.filter(
       ([_, fileType]) => fileType === FileType.Directory
@@ -112,7 +115,7 @@ export async function deleteFunctionOnPalette() {
     const functionlessAddons: Array<[string, FileType]> = [];
     for (const addon of addons) {
       const addonContent = await workspace.fs.readDirectory(
-        Uri.file(`${folderPath}/addons/${addon[0]}`)
+        Uri.file(`${workspaceFolderPath}/addons/${addon[0]}`)
       );
       if (addonContent.find(folder => folder[0] === "functions")) {
         functionlessAddons.push(addon);
@@ -126,7 +129,7 @@ export async function deleteFunctionOnPalette() {
     _token?: CancellationToken
   ): Promise<QuickPickItem[]> {
     const addonsFolders = await workspace.fs.readDirectory(
-      Uri.file(`${folderPath}/addons`)
+      Uri.file(`${workspaceFolderPath}/addons`)
     );
 
     const addons = addonsFolders.filter(
@@ -137,11 +140,11 @@ export async function deleteFunctionOnPalette() {
 
     for (const [addon, _] of addons) {
       const addonContent = await workspace.fs.readDirectory(
-        Uri.file(`${folderPath}/addons/${addon}`)
+        Uri.file(`${workspaceFolderPath}/addons/${addon}`)
       );
       if (addonContent.find(folder => folder[0] === "functions")) {
         const functionContent = await workspace.fs.readDirectory(
-          Uri.file(`${folderPath}/addons/${addon}/functions`)
+          Uri.file(`${workspaceFolderPath}/addons/${addon}/functions`)
         );
         for (const func of functionContent) {
           const fileExtension =
@@ -166,10 +169,12 @@ export async function deleteFunctionOnPalette() {
     const addon = state.addon.label.substring(1);
     const funcContent = await workspace.fs.readFile(
       Uri.file(
-        `${folderPath}/addons/${addon}/functions/fnc_${state.functionName}.sqf`
+        `${workspaceFolderPath}/addons/${addon}/functions/fnc_${state.functionName}.sqf`
       )
     );
-    const prepPath = Uri.file(`${folderPath}/addons/${addon}/XEH_PREP.hpp`);
+    const prepPath = Uri.file(
+      `${workspaceFolderPath}/addons/${addon}/XEH_PREP.hpp`
+    );
     const prepContentEnc = await workspace.fs.readFile(prepPath);
     const prepContentDec = dec.decode(prepContentEnc);
   }
@@ -179,11 +184,11 @@ export async function deleteFunctionOnPalette() {
   }
 
   // await workspace.fs.writeFile(
-  //   Uri.file(`${folderPath}/addons/${addon}/functions/fnc_${functionName}.sqf`),
+  //   Uri.file(`${workspaceFolderPath}/addons/${addon}/functions/fnc_${functionName}.sqf`),
   //   functionContent
   // );
 
-  // const prepPath = Uri.file(`${folderPath}/addons/${addon}/XEH_PREP.hpp`);
+  // const prepPath = Uri.file(`${workspaceFolderPath}/addons/${addon}/XEH_PREP.hpp`);
   // const prepContentEnc = await workspace.fs.readFile(prepPath);
   // const prepContentDec = dec.decode(prepContentEnc);
   // const newPrepContent = enc.encode(
