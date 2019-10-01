@@ -1,12 +1,15 @@
-import { Uri, window, workspace } from "vscode";
 import { MultiStepInput } from "@utils/MultiStepInput";
+import {
+  FileType,
+  Uri,
+  workspace,
+  window,
+  QuickPickItem,
+  CancellationToken
+} from "vscode";
 import { createFunction } from "@shared/createFunction";
 
-export async function createFunctionOnContext(dir: Uri) {
-  const dirArr = dir.path.split("/");
-  dirArr.pop();
-  const [addon] = dirArr.slice(-1);
-
+export async function createFunctionOnPalette() {
   const workspaceFolder = workspace.workspaceFolders![0];
   const workspaceFolderPath = workspaceFolder.uri.path;
   const rootPath = await workspace.fs.readDirectory(
@@ -25,13 +28,32 @@ export async function createFunctionOnContext(dir: Uri) {
     title: string;
     step: number;
     totalSteps: number;
+    addon: QuickPickItem;
     functionName: string;
+    resourceGroup: QuickPickItem | string;
   }
 
   async function collectInputs() {
     const state: Partial<IState> = {};
-    await MultiStepInput.run(input => inputFunctionName(input, state));
+    await MultiStepInput.run(input => pickAddon(input, state));
     return state as IState;
+  }
+
+  async function pickAddon(input: MultiStepInput, state: Partial<IState>) {
+    const addons = await getAvailableAddons(
+      state.resourceGroup!,
+      undefined /* TODO: token */
+    );
+    state.addon = await input.showQuickPick({
+      title,
+      step: 1,
+      totalSteps: 2,
+      placeholder: "Pick A Addon",
+      items: addons,
+      activeItem: state.addon,
+      shouldResume
+    });
+    return (input: MultiStepInput) => inputFunctionName(input, state);
   }
 
   async function inputFunctionName(
@@ -40,11 +62,11 @@ export async function createFunctionOnContext(dir: Uri) {
   ) {
     state.functionName = await input.showInputBox({
       title,
-      step: 1,
-      totalSteps: 1,
+      step: 2,
+      totalSteps: 2,
       value: typeof state.functionName === "string" ? state.functionName : "",
       prompt: "Enter Function Name",
-      validate: validateFunctionIsUnique,
+      validate: validateFunctionIsUnique.bind(state),
       shouldResume
     });
   }
@@ -58,8 +80,9 @@ export async function createFunctionOnContext(dir: Uri) {
     this: Partial<IState>,
     functionName: string
   ) {
+    const addonLabel = this.addon!.label;
     const functions = await workspace.fs.readDirectory(
-      Uri.file(`${workspaceFolderPath}/addons/${addon}/functions`)
+      Uri.file(`${workspaceFolderPath}/addons/${addonLabel}/functions`)
     );
     const statement =
       functions.find(file => file[0] === `fnc_${functionName}.sqf`) !==
@@ -67,7 +90,20 @@ export async function createFunctionOnContext(dir: Uri) {
     return statement ? "Function already present!" : undefined;
   }
 
+  async function getAvailableAddons(
+    _resourceGroup: QuickPickItem | string,
+    _token?: CancellationToken
+  ): Promise<QuickPickItem[]> {
+    const addonsFolders = await workspace.fs.readDirectory(
+      Uri.file(`${workspaceFolderPath}/addons`)
+    );
+    const addons = addonsFolders.filter(
+      ([_, fileType]) => fileType === FileType.Directory
+    );
+    return addons.map(([addon, _]) => ({ label: addon }));
+  }
+
   const state = await collectInputs();
 
-  await createFunction(addon, state.functionName);
+  await createFunction(state.addon.label, state.functionName);
 }

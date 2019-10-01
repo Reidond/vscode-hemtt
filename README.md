@@ -4,16 +4,14 @@ Use hemtt tool from your heavily themed VSCode
 
 ## Features
 
-## Requirements
+### Requirements
 
 - HEMTT in Path
 
-## Extension Settings
+### Extension Settings
 
-This extension contributes the following settings:
+- None
 
-- `hemtt.path`: Path to hemtt executable
-
-## Known Issues
+### Known Issues
 
 - None
