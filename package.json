@@ -27,6 +27,8 @@
     "onCommand:hemtt.project.createFunctionOnContext",
     "onCommand:hemtt.project.deleteFunctionOnPalette",
     "onCommand:hemtt.project.deleteFunctionOnContext",
+    "onCommand:hemtt.project.moveFunctionOnPalette",
+    "onCommand:hemtt.project.moveFunctionOnContext",
     "workspaceContains:hemtt.json",
     "workspaceContains:hemtt.toml"
   ],
@@ -67,6 +69,16 @@
         "command": "hemtt.project.deleteFunctionOnContext",
         "title": "Delete Function",
         "category": "HEMTT"
+      },
+      {
+        "command": "hemtt.project.moveFunctionOnPalette",
+        "title": "Move Function",
+        "category": "HEMTT"
+      },
+      {
+        "command": "hemtt.project.moveFunctionOnContext",
+        "title": "Move Function",
+        "category": "HEMTT"
       }
     ],
     "menus": {
@@ -77,6 +89,10 @@
         },
         {
           "command": "hemtt.project.deleteFunctionOnContext",
+          "when": "false"
+        },
+        {
+          "command": "hemtt.project.moveFunctionOnContext",
           "when": "false"
         }
       ],
@@ -90,6 +106,11 @@
           "command": "hemtt.project.deleteFunctionOnContext",
           "when": "resourceScheme == file && resourceExtname == .sqf",
           "group": "2_workspace@1"
+        },
+        {
+          "command": "hemtt.project.moveFunctionOnContext",
+          "when": "resourceScheme == file && resourceExtname == .sqf",
+          "group": "2_workspace@2"
         }
       ]
     },
