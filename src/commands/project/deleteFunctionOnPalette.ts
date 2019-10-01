@@ -7,7 +7,8 @@ import {
   FileType
 } from "vscode";
 import { MultiStepInput } from "@utils/MultiStepInput";
-import { TextDecoder, TextEncoder } from "util";
+import { deleteFunction } from "@shared/deleteFunction";
+import { findAddon } from "@shared/findAddon";
 
 export async function deleteFunctionOnPalette() {
   const workspaceFolder = workspace.workspaceFolders![0];
@@ -165,37 +166,14 @@ export async function deleteFunctionOnPalette() {
 
   const state = await collectInputs();
 
-  const enc = new TextEncoder();
-  const dec = new TextDecoder();
-
   if (typeof state.addon !== undefined && state.addon.label.charAt(0) === "@") {
     const addon = state.addon.label.substring(1);
-    const funcContent = await workspace.fs.readFile(
-      Uri.file(
-        `${workspaceFolderPath}/addons/${addon}/functions/fnc_${state.functionName}.sqf`
-      )
-    );
-    const prepPath = Uri.file(
-      `${workspaceFolderPath}/addons/${addon}/XEH_PREP.hpp`
-    );
-    const prepContentEnc = await workspace.fs.readFile(prepPath);
-    const prepContentDec = dec.decode(prepContentEnc);
+    await deleteFunction(addon, state.functionName.label);
   }
 
   if (typeof state.addon !== undefined && state.addon.label.charAt(0) === "#") {
     const func = state.addon.label.substring(1);
+    const addon: string = await findAddon(func);
+    await deleteFunction(addon, func);
   }
-
-  // await workspace.fs.writeFile(
-  //   Uri.file(`${workspaceFolderPath}/addons/${addon}/functions/fnc_${functionName}.sqf`),
-  //   functionContent
-  // );
-
-  // const prepPath = Uri.file(`${workspaceFolderPath}/addons/${addon}/XEH_PREP.hpp`);
-  // const prepContentEnc = await workspace.fs.readFile(prepPath);
-  // const prepContentDec = dec.decode(prepContentEnc);
-  // const newPrepContent = enc.encode(
-  //   prepContentDec + `PREP(${functionName});\n`
-  // );
-  // await workspace.fs.writeFile(prepPath, newPrepContent);
 }
