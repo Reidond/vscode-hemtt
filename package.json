@@ -88,8 +88,8 @@
         },
         {
           "command": "hemtt.project.deleteFunctionOnContext",
-          "when": "explorerResourceIsFolder && resourceFilename == functions",
-          "group": "navigation@2"
+          "when": "resourceScheme == file && resourceExtname == .sqf",
+          "group": "2_workspace@1"
         }
       ]
     },
