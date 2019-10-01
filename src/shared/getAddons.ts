@@ -11,12 +11,12 @@ export async function getAddons() {
     ([_, fileType]) => fileType === FileType.Directory
   );
   const addons: Array<[string, FileType]> = [];
-  for (const addon of addons) {
+  for (const folder of folders) {
     const addonContent = await workspace.fs.readDirectory(
-      Uri.file(`${workspaceFolderPath}/addons/${addon[0]}`)
+      Uri.file(`${workspaceFolderPath}/addons/${folder[0]}`)
     );
     if (addonContent.find(folder => folder[0] === "functions")) {
-      addons.push(addon);
+      addons.push(folder);
     }
   }
 
