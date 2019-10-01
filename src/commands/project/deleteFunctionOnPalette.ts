@@ -58,7 +58,7 @@ export async function deleteFunctionOnPalette() {
     });
     if (
       typeof state.addon !== "undefined" &&
-      state.addon.label.charAt(0) === "@"
+      !state.addon.label.includes(".sqf")
     ) {
       return (input: MultiStepInput) => pickFunction(input, state);
     } else {
@@ -93,7 +93,7 @@ export async function deleteFunctionOnPalette() {
     _token?: CancellationToken
   ): Promise<QuickPickItem[]> {
     const addons = await getAddons();
-    return addons.map(([addon, _]) => ({ label: `@${addon}` }));
+    return addons.map(([addon, _]) => ({ label: `${addon}` }));
   }
 
   async function mapAvailableFunctions(
@@ -101,7 +101,7 @@ export async function deleteFunctionOnPalette() {
     _resourceGroup: QuickPickItem | string,
     _token?: CancellationToken
   ): Promise<QuickPickItem[]> {
-    const functions = await getAddonFunctions(addon!.label.substring(1));
+    const functions = await getAddonFunctions(addon!.label);
     return functions.map(([func, _]) => ({ label: `${func}` }));
   }
 
@@ -110,18 +110,18 @@ export async function deleteFunctionOnPalette() {
     _token?: CancellationToken
   ): Promise<QuickPickItem[]> {
     const functions: Array<[string, FileType]> = await findAllFunctions();
-    return functions.map(([func, _]) => ({ label: `#${func}` }));
+    return functions.map(([func, _]) => ({ label: `${func}` }));
   }
 
   const state = await collectInputs();
 
-  if (typeof state.addon !== undefined && state.addon.label.charAt(0) === "@") {
-    const addon = state.addon.label.substring(1);
+  if (typeof state.addon !== undefined && !state.addon.label.includes(".sqf")) {
+    const addon = state.addon.label;
     await deleteFunction(addon, state.functionName.label);
   }
 
-  if (typeof state.addon !== undefined && state.addon.label.charAt(0) === "#") {
-    const func = state.addon.label.substring(1);
+  if (typeof state.addon !== undefined && state.addon.label.includes(".sqf")) {
+    const func = state.addon.label;
     const addon: string = await findAddon(func);
     await deleteFunction(addon, func);
   }
