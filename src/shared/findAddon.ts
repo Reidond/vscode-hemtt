@@ -19,8 +19,10 @@ export async function findAddon(func: string) {
       const functionContent = await workspace.fs.readDirectory(
         Uri.file(`${workspaceFolderPath}/addons/${localAddon}/functions`)
       );
-      if (functionContent.includes([func, FileType.File])) {
-        return localAddon;
+      for (const [localFunc, _] of functionContent) {
+        if (localFunc === func) {
+          return localAddon;
+        }
       }
     }
   }
