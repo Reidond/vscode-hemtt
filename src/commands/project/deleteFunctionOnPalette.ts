@@ -9,6 +9,9 @@ import {
 import { MultiStepInput } from "@utils/MultiStepInput";
 import { deleteFunction } from "@shared/deleteFunction";
 import { findAddon } from "@shared/findAddon";
+import { findAllFunctions } from "@shared/findFunctions";
+import { getAddonFunctions } from "@shared/getAddonFunctions";
+import { getAddons } from "@shared/getAddons";
 
 export async function deleteFunctionOnPalette() {
   const workspaceFolder = workspace.workspaceFolders![0];
@@ -41,8 +44,8 @@ export async function deleteFunctionOnPalette() {
   }
 
   async function pickAddon(input: MultiStepInput, state: Partial<IState>) {
-    const addons = await getAvailableAddons(state.resourceGroup!, undefined);
-    const functions = await searchAllFunctions(state.resourceGroup!, undefined);
+    const addons = await mapAvailableAddons(state.resourceGroup!, undefined);
+    const functions = await mapAllFunctions(state.resourceGroup!, undefined);
     const items: QuickPickItem[] = [];
     state.addon = await input.showQuickPick({
       title,
@@ -64,7 +67,7 @@ export async function deleteFunctionOnPalette() {
   }
 
   async function pickFunction(input: MultiStepInput, state: Partial<IState>) {
-    const functions = await getAvailableFunctions(
+    const functions = await mapAvailableFunctions(
       state.addon,
       state.resourceGroup!,
       undefined
@@ -85,82 +88,28 @@ export async function deleteFunctionOnPalette() {
     return new Promise<boolean>(() => {});
   }
 
-  async function getAvailableAddons(
+  async function mapAvailableAddons(
     _resourceGroup: QuickPickItem | string,
     _token?: CancellationToken
   ): Promise<QuickPickItem[]> {
-    const addonsFolders = await workspace.fs.readDirectory(
-      Uri.file(`${workspaceFolderPath}/addons`)
-    );
-    const addons = addonsFolders.filter(
-      ([_, fileType]) => fileType === FileType.Directory
-    );
-    const functionlessAddons: Array<[string, FileType]> = [];
-    for (const addon of addons) {
-      const addonContent = await workspace.fs.readDirectory(
-        Uri.file(`${workspaceFolderPath}/addons/${addon[0]}`)
-      );
-      if (addonContent.find(folder => folder[0] === "functions")) {
-        functionlessAddons.push(addon);
-      }
-    }
-    return functionlessAddons.map(([addon, _]) => ({ label: `@${addon}` }));
+    const addons = await getAddons();
+    return addons.map(([addon, _]) => ({ label: `@${addon}` }));
   }
 
-  async function getAvailableFunctions(
+  async function mapAvailableFunctions(
     addon: QuickPickItem | undefined,
     _resourceGroup: QuickPickItem | string,
     _token?: CancellationToken
   ): Promise<QuickPickItem[]> {
-    const rawFunctions = await workspace.fs.readDirectory(
-      Uri.file(
-        `${workspaceFolderPath}/addons/${addon!.label.substring(1)}/functions`
-      )
-    );
-    const notFunctions = rawFunctions.filter(
-      ([_, fileType]) => fileType === FileType.File
-    );
-    const functions = notFunctions.filter(([func, _]) => {
-      const fileExtension =
-        func.substring(func.lastIndexOf(".") + 1, func.length) || func;
-      return fileExtension === "sqf";
-    });
+    const functions = await getAddonFunctions(addon!.label.substring(1));
     return functions.map(([func, _]) => ({ label: `${func}` }));
   }
 
-  async function searchAllFunctions(
+  async function mapAllFunctions(
     _resourceGroup: QuickPickItem | string,
     _token?: CancellationToken
   ): Promise<QuickPickItem[]> {
-    const addonsFolders = await workspace.fs.readDirectory(
-      Uri.file(`${workspaceFolderPath}/addons`)
-    );
-
-    const addons = addonsFolders.filter(
-      ([_, fileType]) => fileType === FileType.Directory
-    );
-
-    const functions: Array<[string, FileType]> = [];
-
-    for (const [addon, _] of addons) {
-      const addonContent = await workspace.fs.readDirectory(
-        Uri.file(`${workspaceFolderPath}/addons/${addon}`)
-      );
-      if (addonContent.find(folder => folder[0] === "functions")) {
-        const functionContent = await workspace.fs.readDirectory(
-          Uri.file(`${workspaceFolderPath}/addons/${addon}/functions`)
-        );
-        for (const func of functionContent) {
-          const fileExtension =
-            func[0].substring(func[0].lastIndexOf(".") + 1, func[0].length) ||
-            func;
-          if (fileExtension === "sqf") {
-            functions.push(func);
-          }
-        }
-      }
-    }
-
+    const functions: Array<[string, FileType]> = await findAllFunctions();
     return functions.map(([func, _]) => ({ label: `#${func}` }));
   }
 

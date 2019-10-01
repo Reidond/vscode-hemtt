@@ -40,7 +40,7 @@ export async function createFunctionOnPalette() {
   }
 
   async function pickAddon(input: MultiStepInput, state: Partial<IState>) {
-    const addons = await getAvailableAddons(
+    const addons = await mapAvailableAddons(
       state.resourceGroup!,
       undefined /* TODO: token */
     );
@@ -90,17 +90,17 @@ export async function createFunctionOnPalette() {
     return statement ? "Function already present!" : undefined;
   }
 
-  async function getAvailableAddons(
+  async function mapAvailableAddons(
     _resourceGroup: QuickPickItem | string,
     _token?: CancellationToken
   ): Promise<QuickPickItem[]> {
-    const addonsFolders = await workspace.fs.readDirectory(
+    const allItems = await workspace.fs.readDirectory(
       Uri.file(`${workspaceFolderPath}/addons`)
     );
-    const addons = addonsFolders.filter(
+    const folders = allItems.filter(
       ([_, fileType]) => fileType === FileType.Directory
     );
-    return addons.map(([addon, _]) => ({ label: addon }));
+    return folders.map(([addon, _]) => ({ label: addon }));
   }
 
   const state = await collectInputs();
