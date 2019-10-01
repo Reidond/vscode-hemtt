@@ -10,17 +10,12 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "noUnusedParameters": true,
+    "esModuleInterop": true,
     "baseUrl": "./src",
     "paths": {
-      "@commands/*": [
-        "commands/*"
-      ],
-      "@utils/*": [
-        "utils/*"
-      ],
-      "@shared/*": [
-        "shared/*"
-      ]
+      "@commands/*": ["commands/*"],
+      "@utils/*": ["utils/*"],
+      "@shared/*": ["shared/*"]
     }
   },
   "exclude": ["node_modules", ".vscode-test"]

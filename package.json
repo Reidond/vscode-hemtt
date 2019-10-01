@@ -122,5 +122,7 @@
     "webpack": "^4.37.0",
     "webpack-cli": "^3.3.6"
   },
-  "dependencies": {}
+  "dependencies": {
+    "eol": "^0.9.1"
+  }
 }
