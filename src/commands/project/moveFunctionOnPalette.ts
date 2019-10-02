@@ -12,6 +12,7 @@ import { MultiStepInput } from "@utils/MultiStepInput";
 import { findAddon } from "@shared/findAddon";
 import { TextEncoder, TextDecoder } from "util";
 import eol from "eol";
+import { moveFunction } from "@shared/moveFunction";
 
 export async function moveFunctionOnPalette() {
   const workspaceFolder = workspace.workspaceFolders![0];
@@ -93,46 +94,5 @@ export async function moveFunctionOnPalette() {
 
   const state = await collectInputs();
 
-  const enc = new TextEncoder();
-  const dec = new TextDecoder();
-
-  const sourceAddon = await findAddon(state.functionName.label);
-
-  const sourcePrepPath = Uri.file(
-    `${workspaceFolderPath}/addons/${sourceAddon}/XEH_PREP.hpp`
-  );
-  const withoutFncPart = state.functionName.label.replace("fnc_", "");
-  const withoutExtPart = withoutFncPart.replace(".sqf", "");
-  const sourcePrepContentEnc = await workspace.fs.readFile(sourcePrepPath);
-  const sourcePrepContentDec = dec.decode(sourcePrepContentEnc);
-  const filteredPrepContent = eol
-    .split(sourcePrepContentDec)
-    .filter(line => line !== `PREP(${withoutExtPart});`)
-    .join("\n");
-  await workspace.fs.writeFile(
-    Uri.file(`${workspaceFolderPath}/addons/${sourceAddon}/XEH_PREP.hpp`),
-    enc.encode(filteredPrepContent)
-  );
-
-  const prepPath = Uri.file(
-    `${workspaceFolderPath}/addons/${state.addon.label}/XEH_PREP.hpp`
-  );
-  const prepContentEnc = await workspace.fs.readFile(prepPath);
-  const prepContentDec = dec.decode(prepContentEnc);
-  const newPrepContent = enc.encode(
-    prepContentDec + `PREP(${withoutExtPart});\n`
-  );
-  await workspace.fs.writeFile(
-    Uri.file(`${workspaceFolderPath}/addons/${state.addon.label}/XEH_PREP.hpp`),
-    newPrepContent
-  );
-
-  const funcUri = Uri.file(
-    `${workspaceFolderPath}/addons/${sourceAddon}/functions/${state.functionName.label}`
-  );
-  const dest = Uri.file(
-    `${workspaceFolderPath}/addons/${state.addon.label}/functions/${state.functionName.label}`
-  );
-  await workspace.fs.copy(funcUri, dest);
-  await workspace.fs.delete(funcUri);
+  await moveFunction(state.addon.label, state.functionName.label);
 }
