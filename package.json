@@ -9,7 +9,7 @@
     "theme": "dark"
   },
   "engines": {
-    "vscode": "^1.36.0"
+    "vscode": "^1.38.0"
   },
   "categories": [
     "Other"
@@ -23,6 +23,12 @@
     "onCommand:hemtt.project.create",
     "onCommand:hemtt.project.init",
     "onCommand:hemtt.project.createAddon",
+    "onCommand:hemtt.project.createFunctionOnPalette",
+    "onCommand:hemtt.project.createFunctionOnContext",
+    "onCommand:hemtt.project.deleteFunctionOnPalette",
+    "onCommand:hemtt.project.deleteFunctionOnContext",
+    "onCommand:hemtt.project.moveFunctionOnPalette",
+    "onCommand:hemtt.project.moveFunctionOnContext",
     "workspaceContains:hemtt.json",
     "onLanguage:json",
     "workspaceContains:hemtt.toml",
@@ -83,6 +89,36 @@
       {
         "command": "hemtt.view.runSelectedScript",
         "title": "Run Selected Script"
+      },
+      {
+        "command": "hemtt.project.createFunctionOnPalette",
+        "title": "Create Function",
+        "category": "HEMTT"
+      },
+      {
+        "command": "hemtt.project.createFunctionOnContext",
+        "title": "New Function",
+        "category": "HEMTT"
+      },
+      {
+        "command": "hemtt.project.deleteFunctionOnPalette",
+        "title": "Delete Function",
+        "category": "HEMTT"
+      },
+      {
+        "command": "hemtt.project.deleteFunctionOnContext",
+        "title": "Delete Function",
+        "category": "HEMTT"
+      },
+      {
+        "command": "hemtt.project.moveFunctionOnPalette",
+        "title": "Move Function",
+        "category": "HEMTT"
+      },
+      {
+        "command": "hemtt.project.moveFunctionOnContext",
+        "title": "Move Function",
+        "category": "HEMTT"
       }
     ],
     "menus": {
@@ -106,6 +142,18 @@
         {
           "command": "hemtt.view.runSelectedScript",
           "when": "false"
+        },
+        {
+          "command": "hemtt.project.createFunctionOnContext",
+          "when": "false"
+        },
+        {
+          "command": "hemtt.project.deleteFunctionOnContext",
+          "when": "false"
+        },
+        {
+          "command": "hemtt.project.moveFunctionOnContext",
+          "when": "false"
         }
       ],
       "editor/context": [
@@ -113,6 +161,23 @@
           "command": "hemtt.view.runSelectedScript",
           "when": "resourceFilename == 'hemtt.json'",
           "group": "navigation@+1"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "hemtt.project.createFunctionOnContext",
+          "when": "explorerResourceIsFolder && resourceFilename == functions",
+          "group": "hemtt@1"
+        },
+        {
+          "command": "hemtt.project.deleteFunctionOnContext",
+          "when": "resourceScheme == file && resourceExtname == .sqf",
+          "group": "hemtt@2"
+        },
+        {
+          "command": "hemtt.project.moveFunctionOnContext",
+          "when": "resourceScheme == file && resourceExtname == .sqf",
+          "group": "hemtt@3"
         }
       ],
       "view/title": [
@@ -226,31 +291,32 @@
           }
         }
       }
-    ]
-  },
-  "scripts": {
-    "vscode:prepublish": "webpack --mode production",
-    "compile": "webpack --mode none",
-    "watch": "webpack --mode none --watch",
-    "test-compile": "tsc -p ./"
-  },
-  "devDependencies": {
-    "@types/glob": "^7.1.1",
-    "@types/mocha": "^5.2.6",
-    "@types/node": "^10.12.21",
-    "@types/vscode": "^1.36.0",
-    "glob": "^7.1.4",
-    "mocha": "^6.1.4",
-    "ts-loader": "^6.0.4",
-    "tslint": "^5.12.1",
-    "tslint-config-prettier": "^1.18.0",
-    "typescript": "^3.3.1",
-    "vscode-test": "^1.0.0-next.0",
-    "webpack": "^4.37.0",
-    "webpack-cli": "^3.3.6"
-  },
-  "dependencies": {
-    "jsonc-parser": "^2.1.1",
-    "vscode-nls": "^4.1.1"
+    ],
+    "scripts": {
+      "vscode:prepublish": "webpack --mode production",
+      "compile": "webpack --mode none",
+      "watch": "webpack --mode none --watch",
+      "test-compile": "tsc -p ./"
+    },
+    "devDependencies": {
+      "@types/glob": "^7.1.1",
+      "@types/mocha": "^5.2.6",
+      "@types/node": "^10.12.21",
+      "@types/vscode": "^1.38.0",
+      "glob": "^7.1.4",
+      "mocha": "^6.1.4",
+      "ts-loader": "^6.0.4",
+      "tslint": "^5.12.1",
+      "tslint-config-prettier": "^1.18.0",
+      "typescript": "^3.3.1",
+      "vscode-test": "^1.0.0-next.0",
+      "webpack": "^4.37.0",
+      "webpack-cli": "^3.3.6"
+    },
+    "dependencies": {
+      "jsonc-parser": "^2.1.1",
+      "vscode-nls": "^4.1.1",
+      "eol": "^0.9.1"
+    }
   }
 }
