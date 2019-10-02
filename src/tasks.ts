@@ -21,7 +21,7 @@ import {
 } from "vscode";
 import * as path from "path";
 import * as fs from "fs";
-import * as minimatch from "minimatch";
+import minimatch from "minimatch";
 import { JSONVisitor, visit, ParseErrorCode } from "jsonc-parser";
 
 export interface IHemttTaskDefinition extends TaskDefinition {
@@ -407,13 +407,7 @@ export function runScript(script: string, document: TextDocument) {
 }
 
 export interface IStringMap {
-    [s: string]: IHEMTTScript;
-}
-
-export interface IHEMTTScript {
-    steps: string[];
-    steps_windows: string[];
-    steps_linux: string[];
+    [s: string]: string;
 }
 
 async function findAllScripts(buffer: string): Promise<IStringMap> {
@@ -433,7 +427,7 @@ async function findAllScripts(buffer: string): Promise<IStringMap> {
         onLiteralValue(value: any, _offset: number, _length: number) {
             if (script) {
                 if (typeof value === "string") {
-                    //scripts[script] = value;
+                    scripts[script] = value;
                 }
                 script = undefined;
             }
