@@ -4,26 +4,26 @@
  *--------------------------------------------------------------------------------------------*/
 
 import {
-    TreeItem,
-    WorkspaceFolder,
-    TreeItemCollapsibleState,
-    ThemeIcon
+  TreeItem,
+  WorkspaceFolder,
+  TreeItemCollapsibleState,
+  ThemeIcon
 } from "vscode";
 import { HemttJSON } from "./HemttJSON";
 
 export class Folder extends TreeItem {
-    public hemttProjetFiles: HemttJSON[] = [];
-    public workspaceFolder: WorkspaceFolder;
+  public hemttProjetFiles: HemttJSON[] = [];
+  public workspaceFolder: WorkspaceFolder;
 
-    constructor(folder: WorkspaceFolder) {
-        super(folder.name, TreeItemCollapsibleState.Expanded);
-        this.contextValue = "folder";
-        this.resourceUri = folder.uri;
-        this.workspaceFolder = folder;
-        this.iconPath = ThemeIcon.Folder;
-    }
+  constructor(folder: WorkspaceFolder) {
+    super(folder.name, TreeItemCollapsibleState.Expanded);
+    this.contextValue = "folder";
+    this.resourceUri = folder.uri;
+    this.workspaceFolder = folder;
+    this.iconPath = ThemeIcon.Folder;
+  }
 
-    public addHemttProjectFile(packageJson: HemttJSON) {
-        this.hemttProjetFiles.push(packageJson);
-    }
+  public addHemttProjectFile(packageJson: HemttJSON) {
+    this.hemttProjetFiles.push(packageJson);
+  }
 }

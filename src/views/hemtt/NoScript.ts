@@ -6,8 +6,8 @@
 import { TreeItem, TreeItemCollapsibleState } from "vscode";
 
 export class NoScripts extends TreeItem {
-    constructor() {
-        super("No scripts found", TreeItemCollapsibleState.None);
-        this.contextValue = "noscripts";
-    }
+  constructor() {
+    super("No scripts found", TreeItemCollapsibleState.None);
+    this.contextValue = "noscripts";
+  }
 }
