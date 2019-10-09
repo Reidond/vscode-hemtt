@@ -9,10 +9,6 @@ import {
 import { getAddons } from "@shared/getAddons";
 import { findAllFunctions } from "@shared/findFunctions";
 import { MultiStepInput } from "@utils/MultiStepInput";
-import { findAddon } from "@shared/findAddon";
-import { TextEncoder, TextDecoder } from "util";
-import eol from "eol";
-import { moveFunction } from "@shared/moveFunction";
 
 export async function moveFunctionOnPalette() {
   const workspaceFolder = workspace.workspaceFolders![0];
@@ -94,5 +90,5 @@ export async function moveFunctionOnPalette() {
 
   const state = await collectInputs();
 
-  await moveFunction(state.addon.label, state.functionName.label);
+  // move
 }

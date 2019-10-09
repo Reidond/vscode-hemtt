@@ -7,7 +7,6 @@ import {
 } from "vscode";
 import { MultiStepInput } from "@utils/MultiStepInput";
 import { getAddons } from "@shared/getAddons";
-import { moveFunction } from "@shared/moveFunction";
 
 export async function moveFunctionOnContext(dir: Uri) {
   const dirArr = dir.path.split("/");
@@ -69,5 +68,5 @@ export async function moveFunctionOnContext(dir: Uri) {
 
   const state = await collectInputs();
 
-  await moveFunction(state.addon.label, func!);
+  // move
 }

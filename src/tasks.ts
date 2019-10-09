@@ -12,16 +12,15 @@ import {
   ShellExecution,
   Uri,
   workspace,
-  DebugConfiguration,
-  debug,
   TaskProvider,
   TextDocument,
   tasks,
-  TaskScope
+  TaskScope,
+  window
 } from "vscode";
 import * as path from "path";
 import * as fs from "fs";
-import minimatch from "minimatch";
+import minimatch = require("minimatch");
 import { JSONVisitor, visit, ParseErrorCode } from "jsonc-parser";
 
 export interface IHemttTaskDefinition extends TaskDefinition {
@@ -236,13 +235,6 @@ function isExcluded(folder: WorkspaceFolder, hemttJsonUri: Uri) {
   return false;
 }
 
-function isDebugScript(script: string): boolean {
-  const match = script.match(
-    /--(inspect|debug)(-brk)?(=((\[[0-9a-fA-F:]*\]|[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+|[a-zA-Z0-9\.]*):)?(\d+))?/
-  );
-  return match !== null;
-}
-
 async function provideHemttScriptsForFolder(
   hemttJsonUri: Uri
 ): Promise<Task[]> {
@@ -396,7 +388,9 @@ async function findAllScripts(buffer: string): Promise<IStringMap> {
 
   const visitor: JSONVisitor = {
     onError(_error: ParseErrorCode, _offset: number, _length: number) {
-      console.log(_error);
+      window.showErrorMessage(
+        `Got ${_error} at ${_offset}. Line length is ${_length}`
+      );
     },
     onObjectEnd() {
       if (inScripts) {
@@ -422,6 +416,7 @@ async function findAllScripts(buffer: string): Promise<IStringMap> {
       }
     }
   };
+
   visit(buffer, visitor);
 
   return scripts;
@@ -438,7 +433,11 @@ export function findAllScriptRanges(
   let inScripts = false;
 
   const visitor: JSONVisitor = {
-    onError(_error: ParseErrorCode, _offset: number, _length: number) {},
+    onError(_error: ParseErrorCode, _offset: number, _length: number) {
+      window.showErrorMessage(
+        `Got ${_error} at ${_offset}. Line length is ${_length}`
+      );
+    },
     onObjectEnd() {
       if (inScripts) {
         inScripts = false;
@@ -473,7 +472,11 @@ export function findScriptAtPosition(
   let inScripts = false;
   let scriptStart: number | undefined;
   const visitor: JSONVisitor = {
-    onError(_error: ParseErrorCode, _offset: number, _length: number) {},
+    onError(_error: ParseErrorCode, _offset: number, _length: number) {
+      window.showErrorMessage(
+        `Got ${_error} at ${_offset}. Line length is ${_length}`
+      );
+    },
     onObjectEnd() {
       if (inScripts) {
         inScripts = false;

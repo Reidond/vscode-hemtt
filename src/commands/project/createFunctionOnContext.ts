@@ -1,6 +1,5 @@
 import { Uri, window, workspace } from "vscode";
 import { MultiStepInput } from "@utils/MultiStepInput";
-import { createFunction } from "@shared/createFunction";
 
 export async function createFunctionOnContext(dir: Uri) {
   const dirArr = dir.path.split("/");
@@ -69,5 +68,5 @@ export async function createFunctionOnContext(dir: Uri) {
 
   const state = await collectInputs();
 
-  await createFunction(addon, state.functionName);
+  // create
 }
