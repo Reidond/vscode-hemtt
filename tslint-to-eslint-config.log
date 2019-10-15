@@ -1,0 +1,12 @@
+comment-format does not yet have an ESLint equivalent.
+jsdoc-format does not yet have an ESLint equivalent.
+no-duplicate-imports does not yet have an ESLint equivalent.
+no-duplicate-variable does not yet have an ESLint equivalent.
+no-reference-import does not yet have an ESLint equivalent.
+no-submodule-imports does not yet have an ESLint equivalent.
+no-unused-expression does not yet have an ESLint equivalent.
+only-arrow-functions does not yet have an ESLint equivalent.
+prefer-conditional-expression does not yet have an ESLint equivalent.
+semicolon does not yet have an ESLint equivalent.
+triple-equals does not yet have an ESLint equivalent.
+variable-name does not yet have an ESLint equivalent.

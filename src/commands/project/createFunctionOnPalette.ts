@@ -7,7 +7,6 @@ import {
   QuickPickItem,
   CancellationToken
 } from "vscode";
-import { createFunction } from "@shared/createFunction";
 
 export async function createFunctionOnPalette() {
   const workspaceFolder = workspace.workspaceFolders![0];
@@ -105,5 +104,5 @@ export async function createFunctionOnPalette() {
 
   const state = await collectInputs();
 
-  await createFunction(state.addon.label, state.functionName);
+  // create
 }

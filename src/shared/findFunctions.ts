@@ -1,6 +1,6 @@
 import { workspace, Uri, FileType } from "vscode";
 
-export async function findAllFunctions() {
+export async function findAllFunctions(fullPath?: boolean) {
   const workspaceFolder = workspace.workspaceFolders![0];
   const workspaceFolderPath = workspaceFolder.uri.path;
 
@@ -26,8 +26,12 @@ export async function findAllFunctions() {
         const fileExtension =
           func[0].substring(func[0].lastIndexOf(".") + 1, func[0].length) ||
           func;
-        if (fileExtension === "sqf") {
+        if (fileExtension === "sqf" && !fullPath) {
           functions.push(func);
+        }
+        if (fullPath) {
+          const file = `${workspaceFolderPath}/addons/${addon}/functions/${func}`;
+          functions.push([file, FileType.File]);
         }
       }
     }

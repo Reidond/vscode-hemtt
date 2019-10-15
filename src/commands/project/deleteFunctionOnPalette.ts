@@ -7,7 +7,6 @@ import {
   FileType
 } from "vscode";
 import { MultiStepInput } from "@utils/MultiStepInput";
-import { deleteFunction } from "@shared/deleteFunction";
 import { findAddon } from "@shared/findAddon";
 import { findAllFunctions } from "@shared/findFunctions";
 import { getAddonFunctions } from "@shared/getAddonFunctions";
@@ -117,12 +116,12 @@ export async function deleteFunctionOnPalette() {
 
   if (typeof state.addon !== undefined && !state.addon.label.includes(".sqf")) {
     const addon = state.addon.label;
-    await deleteFunction(addon, state.functionName.label);
+    // delete
   }
 
   if (typeof state.addon !== undefined && state.addon.label.includes(".sqf")) {
     const func = state.addon.label;
     const addon: string = await findAddon(func);
-    await deleteFunction(addon, func);
+    // delete
   }
 }
