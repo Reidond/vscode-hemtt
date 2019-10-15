@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import * as fs from "fs";
 import * as path from "path";
 import { MultiStepInput } from "@utils/MultiStepInput";
+import { createTask } from "../../tasks";
 
 const config = vscode.workspace.getConfiguration("hemtt");
 
@@ -9,7 +10,7 @@ export async function createAddon() {
   const terminal = vscode.window.createTerminal();
 
   const workspaceFolder = vscode.workspace.workspaceFolders![0];
-  const workspaceFolderPath = workspaceFolder.uri.path;
+  const workspaceFolderPath = workspaceFolder.uri.fsPath;
 
   const files = fs.readdirSync(workspaceFolderPath!);
 
@@ -72,7 +73,12 @@ export async function createAddon() {
     return;
   }
 
-  terminal.sendText(`hemtt addon ${state.addonName}`);
+  const task = createTask(
+    "template addon",
+    `template addon ${state.addonName}`,
+    workspaceFolder,
+    vscode.Uri.file(`${workspaceFolderPath}/hemtt.json`)
+  );
 
   vscode.window.withProgress(
     {
@@ -81,12 +87,7 @@ export async function createAddon() {
       cancellable: false
     },
     () => {
-      return new Promise(resolve =>
-        setTimeout(() => {
-          terminal.dispose();
-          resolve();
-        }, 1000)
-      );
+      return vscode.tasks.executeTask(task);
     }
   );
 }
