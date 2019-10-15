@@ -18,3 +18,7 @@ Use hemtt tool from your heavily themed VSCode
 ### Known Issues
 
 - None
+
+## Thanks
+
+- [synixebrett](https://github.com/synixebrett) for [HEMTT](https://github.com/synixebrett/HEMTT)
