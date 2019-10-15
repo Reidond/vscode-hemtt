@@ -115,8 +115,8 @@ export class HemttScriptsTreeDataProvider
   }
 
   private scriptIsValid(scripts: any, task: Task): boolean {
-    scripts.forEach((script: any) => {
-      const label = getTaskName(script, task.definition.path);
+    Object.entries(scripts).forEach((script): any => {
+      const label = getTaskName(script[0], task.definition.path);
       if (task.name === label) {
         return true;
       }
@@ -130,10 +130,11 @@ export class HemttScriptsTreeDataProvider
     const uri = getHemttJsonUriFromTask(task);
     const scripts = await getScripts(uri!);
 
-    if (!this.scriptIsValid(scripts, task)) {
-      this.scriptNotValid(task);
-      return;
-    }
+    // if (!this.scriptIsValid(scripts, task)) {
+    //   this.scriptNotValid(task);
+    //   return;
+    // }
+
     tasks.executeTask(script.task);
   }
 
@@ -149,11 +150,6 @@ export class HemttScriptsTreeDataProvider
     const visitor: JSONVisitor = {
       onError() {
         return scriptOffset;
-      },
-      onObjectEnd() {
-        if (inScripts) {
-          inScripts = false;
-        }
       },
       onObjectProperty(property: string, offset: number, _length: number) {
         if (property === "scripts") {

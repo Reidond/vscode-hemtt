@@ -381,6 +381,17 @@ export interface IStringMap {
   [s: string]: string;
 }
 
+function defaultProps(property: string) {
+  return (
+    property === "steps" ||
+    property === "steps_windows" ||
+    property === "steps_linux" ||
+    property === "show_output" ||
+    property === "parallel" ||
+    property === "foreach"
+  );
+}
+
 async function findAllScripts(buffer: string): Promise<IStringMap> {
   const scripts: IStringMap = {};
   let script: string | undefined;
@@ -392,16 +403,9 @@ async function findAllScripts(buffer: string): Promise<IStringMap> {
         `Got ${_error} at ${_offset}. Line length is ${_length}`
       );
     },
-    onObjectEnd() {
-      if (inScripts) {
-        inScripts = false;
-      }
-    },
-    onLiteralValue(value: any, _offset: number, _length: number) {
+    onLiteralValue(_value: any, _offset: number, _length: number) {
       if (script) {
-        if (typeof value === "string") {
-          scripts[script] = value;
-        }
+        scripts[script] = "";
         script = undefined;
       }
     },
@@ -409,10 +413,9 @@ async function findAllScripts(buffer: string): Promise<IStringMap> {
       if (property === "scripts") {
         inScripts = true;
       } else if (inScripts && !script) {
-        script = property;
-      } else {
-        // nested object which is invalid, ignore the script
-        script = undefined;
+        if (!defaultProps(property)) {
+          script = property;
+        }
       }
     }
   };
@@ -438,14 +441,9 @@ export function findAllScriptRanges(
         `Got ${_error} at ${_offset}. Line length is ${_length}`
       );
     },
-    onObjectEnd() {
-      if (inScripts) {
-        inScripts = false;
-      }
-    },
-    onLiteralValue(value: any, _offset: number, _length: number) {
+    onLiteralValue(_value: any, _offset: number, _length: number) {
       if (script) {
-        scripts.set(script, [offset, length, value]);
+        scripts.set(script, [offset, length, ""]);
         script = undefined;
       }
     },
@@ -453,13 +451,17 @@ export function findAllScriptRanges(
       if (property === "scripts") {
         inScripts = true;
       } else if (inScripts) {
-        script = property;
-        offset = off;
-        length = len;
+        if (!defaultProps(property)) {
+          script = property;
+          offset = off;
+          length = len;
+        }
       }
     }
   };
+
   visit(buffer, visitor);
+
   return scripts;
 }
 
@@ -502,15 +504,16 @@ export function findScriptAtPosition(
       if (property === "scripts") {
         inScripts = true;
       } else if (inScripts) {
-        scriptStart = nodeOffset;
-        script = property;
-      } else {
-        // nested object which is invalid, ignore the script
-        script = undefined;
+        if (!defaultProps(property)) {
+          scriptStart = nodeOffset;
+          script = property;
+        }
       }
     }
   };
+
   visit(buffer, visitor);
+
   return foundScript;
 }
 

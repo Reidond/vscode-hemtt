@@ -76,7 +76,7 @@ export class HemttScriptHoverProvider implements HoverProvider {
   public runScriptFromHover(args: any) {
     const script = args.script;
     const documentUri = args.documentUri;
-    const folder = workspace.getWorkspaceFolder(documentUri);
+    const folder = workspace.getWorkspaceFolder(Uri.file(documentUri.path));
     if (folder) {
       const task = createTask(script, `run ${script}`, folder, documentUri);
       tasks.executeTask(task);
