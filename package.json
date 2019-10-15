@@ -6,7 +6,7 @@
   "icon": "images/hemtt-small.png",
   "preview": true,
   "galleryBanner": {
-    "color": "#262626",
+    "color": "#232323",
     "theme": "dark"
   },
   "engines": {
