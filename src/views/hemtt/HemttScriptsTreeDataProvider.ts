@@ -23,7 +23,7 @@ import { HemttJSON } from "./HemttJSON";
 import { Folder } from "./Folder";
 import {
   getTaskName,
-  getHemttJsonUriFromTask,
+  getHemttFileUriFromTask,
   getScripts,
   createTask,
   isWorkspaceFolder,
@@ -32,6 +32,7 @@ import {
 import { HemttScript } from "./HemttScript";
 import { JSONVisitor, visit } from "jsonc-parser";
 import * as path from "path";
+import { HemttTOML } from "./HemttTOML";
 
 export class HemttScriptsTreeDataProvider
   implements TreeDataProvider<TreeItem> {
@@ -75,6 +76,9 @@ export class HemttScriptsTreeDataProvider
     if (element instanceof HemttJSON) {
       return element.folder;
     }
+    if (element instanceof HemttTOML) {
+      return element.folder;
+    }
     if (element instanceof HemttScript) {
       return element.package;
     }
@@ -98,6 +102,9 @@ export class HemttScriptsTreeDataProvider
       return element.hemttProjetFiles;
     }
     if (element instanceof HemttJSON) {
+      return element.scripts;
+    }
+    if (element instanceof HemttTOML) {
       return element.scripts;
     }
     if (element instanceof HemttScript) {
@@ -127,7 +134,7 @@ export class HemttScriptsTreeDataProvider
 
   private async runScript(script: HemttScript) {
     const task = script.task;
-    const uri = getHemttJsonUriFromTask(task);
+    const uri = await getHemttFileUriFromTask(task);
     const scripts = await getScripts(uri!);
 
     // if (!this.scriptIsValid(scripts, task)) {

@@ -10,19 +10,25 @@ import {
   TreeItemCollapsibleState,
   workspace,
   TaskGroup,
-  WorkspaceFolder
+  WorkspaceFolder,
+  Uri
 } from "vscode";
 import { HemttJSON } from "./HemttJSON";
 import * as path from "path";
-import { getScripts, getHemttJsonUriFromTask } from "../../tasks";
+import { getScripts, getHemttFileUriFromTask } from "../../tasks";
+import { HemttTOML } from "./HemttTOML";
 
 type ExplorerCommands = "open" | "run";
 
 export class HemttScript extends TreeItem {
   public task: Task;
-  public package: HemttJSON;
+  public package: HemttJSON | HemttTOML;
 
-  constructor(context: ExtensionContext, hemttJSON: HemttJSON, task: Task) {
+  constructor(
+    context: ExtensionContext,
+    hemttFile: HemttJSON | HemttTOML,
+    task: Task
+  ) {
     super(task.name, TreeItemCollapsibleState.None);
     const command: ExplorerCommands =
       workspace
@@ -45,7 +51,7 @@ export class HemttScript extends TreeItem {
     if (task.group && task.group === TaskGroup.Rebuild) {
       this.contextValue = "debugScript";
     }
-    this.package = hemttJSON;
+    this.package = hemttFile;
     this.task = task;
     this.command = commandList[command];
 
@@ -69,7 +75,9 @@ export class HemttScript extends TreeItem {
       };
     }
 
-    const uri = getHemttJsonUriFromTask(task);
+    let uri: Uri | null;
+
+    getHemttFileUriFromTask(task).then(localUri => (uri = localUri));
 
     getScripts(uri!).then(scripts => {
       if (scripts && scripts[task.definition.script]) {

@@ -320,7 +320,14 @@ export function createTask(
   );
 }
 
-export function getHemttJsonUriFromTask(task: Task): Uri | null {
+export async function getHemttFileUriFromTask(task: Task): Promise<Uri | null> {
+  const hemttFile = await hasHemttFile();
+  return hemttFile[0]
+    ? getHemttTomlUriFromTask(task)
+    : getHemttJsonUriFromTask(task);
+}
+
+function getHemttJsonUriFromTask(task: Task): Uri | null {
   if (isWorkspaceFolder(task.scope)) {
     if (task.definition.path) {
       return Uri.file(
@@ -333,20 +340,37 @@ export function getHemttJsonUriFromTask(task: Task): Uri | null {
   return null;
 }
 
-export async function hasHemttJson(): Promise<boolean> {
+function getHemttTomlUriFromTask(task: Task): Uri | null {
+  if (isWorkspaceFolder(task.scope)) {
+    if (task.definition.path) {
+      return Uri.file(
+        path.join(task.scope.uri.fsPath, task.definition.path, "hemtt.toml")
+      );
+    } else {
+      return Uri.file(path.join(task.scope.uri.fsPath, "hemtt.toml"));
+    }
+  }
+  return null;
+}
+
+export async function hasHemttFile(): Promise<[boolean, boolean]> {
   const folders = workspace.workspaceFolders;
   if (!folders) {
-    return false;
+    return [false, false];
   }
   for (const folder of folders) {
     if (folder.uri.scheme === "file") {
       const hemttJson = path.join(folder.uri.fsPath, "hemtt.json");
+      const hemttToml = path.join(folder.uri.fsPath, "hemtt.toml");
       if (await exists(hemttJson)) {
-        return true;
+        return [false, true];
+      }
+      if (await exists(hemttToml)) {
+        return [true, true];
       }
     }
   }
-  return false;
+  return [false, false];
 }
 
 async function exists(file: string): Promise<boolean> {
