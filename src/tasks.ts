@@ -360,13 +360,11 @@ export async function hasHemttFile(): Promise<[boolean, boolean]> {
   }
   for (const folder of folders) {
     if (folder.uri.scheme === "file") {
-      const hemttJson = path.join(folder.uri.fsPath, "hemtt.json");
       const hemttToml = path.join(folder.uri.fsPath, "hemtt.toml");
-      if (await exists(hemttJson)) {
-        return [false, true];
-      }
       if (await exists(hemttToml)) {
         return [true, true];
+      } else {
+        return [false, true];
       }
     }
   }
