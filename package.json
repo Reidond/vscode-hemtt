@@ -316,6 +316,7 @@
     "webpack-cli": "^3.3.6"
   },
   "dependencies": {
+    "@toml-tools/parser": "^0.3.1",
     "eol": "^0.9.1",
     "jsonc-parser": "^2.1.1",
     "vscode-nls": "^4.1.1"
