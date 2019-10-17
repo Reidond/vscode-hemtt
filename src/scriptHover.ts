@@ -52,7 +52,7 @@ export class HemttScriptHoverProvider implements HoverProvider {
     let hover: Hover | undefined;
 
     if (!cachedDocument || cachedDocument.fsPath !== document.uri.fsPath) {
-      cachedScriptsMap = findAllScriptRanges(document.getText());
+      findAllScriptRanges(document.getText()).then(data => cachedScriptsMap = data);
       cachedDocument = document.uri;
     }
 

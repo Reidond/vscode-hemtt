@@ -321,8 +321,7 @@ export function createTask(
 }
 
 export async function getHemttFileUriFromTask(task: Task): Promise<Uri | null> {
-  const hemttFile = await hasHemttFile();
-  return hemttFile[0]
+  return (await hasHemttFile()).isHemttToml
     ? getHemttTomlUriFromTask(task)
     : getHemttJsonUriFromTask(task);
 }
@@ -353,22 +352,36 @@ function getHemttTomlUriFromTask(task: Task): Uri | null {
   return null;
 }
 
-export async function hasHemttFile(): Promise<[boolean, boolean]> {
+interface IHemttFiles {
+  isHemttToml: boolean;
+  isHemttJson: boolean;
+}
+
+export async function hasHemttFile(): Promise<IHemttFiles> {
+  const hemttFiles: IHemttFiles = {
+    isHemttToml: false,
+    isHemttJson: false
+  };
   const folders = workspace.workspaceFolders;
   if (!folders) {
-    return [false, false];
+    return hemttFiles;
   }
   for (const folder of folders) {
     if (folder.uri.scheme === "file") {
       const hemttToml = path.join(folder.uri.fsPath, "hemtt.toml");
-      if (await exists(hemttToml)) {
-        return [true, true];
+      const baseHemtt = path.join(folder.uri.fsPath, "./hemtt/base.toml");
+      if ((await exists(hemttToml)) || (await exists(baseHemtt))) {
+        hemttFiles.isHemttToml = true;
+        hemttFiles.isHemttJson = false;
+        return hemttFiles;
       } else {
-        return [false, true];
+        hemttFiles.isHemttToml = false;
+        hemttFiles.isHemttJson = true;
+        return hemttFiles;
       }
     }
   }
-  return [false, false];
+  return hemttFiles;
 }
 
 async function exists(file: string): Promise<boolean> {
@@ -415,6 +428,12 @@ function defaultProps(property: string) {
 }
 
 async function findAllScripts(buffer: string): Promise<IStringMap> {
+  return (await hasHemttFile()).isHemttToml
+    ? findAllTomlScripts(buffer)
+    : findAllJsonScripts(buffer);
+}
+
+async function findAllJsonScripts(buffer: string): Promise<IStringMap> {
   const scripts: IStringMap = {};
   let script: string | undefined;
   let inScripts = false;
@@ -447,7 +466,19 @@ async function findAllScripts(buffer: string): Promise<IStringMap> {
   return scripts;
 }
 
-export function findAllScriptRanges(
+async function findAllTomlScripts(_buffer: string): Promise<IStringMap> {
+  return {};
+}
+
+export async function findAllScriptRanges(
+  buffer: string
+): Promise<Map<string, [number, number, string]>> {
+  return (await hasHemttFile()).isHemttToml
+    ? findAllTomlScriptsRanges(buffer)
+    : findAllJsonScriptRanges(buffer);
+}
+
+function findAllJsonScriptRanges(
   buffer: string
 ): Map<string, [number, number, string]> {
   const scripts: Map<string, [number, number, string]> = new Map();
@@ -487,7 +518,23 @@ export function findAllScriptRanges(
   return scripts;
 }
 
-export function findScriptAtPosition(
+function findAllTomlScriptsRanges(
+  _buffer: string
+): Map<string, [number, number, string]> {
+  const scripts: Map<string, [number, number, string]> = new Map();
+  return scripts;
+}
+
+export async function findScriptAtPosition(
+  buffer: string,
+  offset: number
+): Promise<string | undefined> {
+  return (await hasHemttFile()).isHemttToml
+    ? findTomlScriptAtPosition(buffer, offset)
+    : findJsonScriptAtPosition(buffer, offset);
+}
+
+function findJsonScriptAtPosition(
   buffer: string,
   offset: number
 ): string | undefined {
@@ -537,6 +584,13 @@ export function findScriptAtPosition(
   visit(buffer, visitor);
 
   return foundScript;
+}
+
+function findTomlScriptAtPosition(
+  _buffer: string,
+  _offset: number
+): string | undefined {
+  return undefined;
 }
 
 export async function getScripts(

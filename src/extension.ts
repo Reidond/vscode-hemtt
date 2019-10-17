@@ -5,7 +5,7 @@ import {
   invalidateHoverScriptsCache
 } from "./scriptHover";
 import { HemttScriptsTreeDataProvider } from "./views/hemtt/HemttScriptsTreeDataProvider";
-import { HemttTaskProvider, invalidateTasksCache, hasHemttJson } from "./tasks";
+import { HemttTaskProvider, invalidateTasksCache, hasHemttFile } from "./tasks";
 
 let treeDataProvider: HemttScriptsTreeDataProvider | undefined;
 
@@ -33,7 +33,7 @@ export async function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(d);
   registerCommands(context);
 
-  if (await hasHemttJson()) {
+  if (await hasHemttFile()) {
     vscode.commands.executeCommand(
       "setContext",
       "hemtt:showScriptExplorer",

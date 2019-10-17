@@ -27,7 +27,8 @@ import {
   getScripts,
   createTask,
   isWorkspaceFolder,
-  IHemttTaskDefinition
+  IHemttTaskDefinition,
+  hasHemttFile
 } from "../../tasks";
 import { HemttScript } from "./HemttScript";
 import { JSONVisitor, visit } from "jsonc-parser";
@@ -150,7 +151,19 @@ export class HemttScriptsTreeDataProvider
     window.showErrorMessage(message);
   }
 
-  private findScript(document: TextDocument, script?: HemttScript): number {
+  private async findScript(
+    document: TextDocument,
+    script?: HemttScript
+  ): Promise<number> {
+    return (await hasHemttFile()).isHemttToml
+      ? this.findTomlScripts(document, script)
+      : this.findJsonScripts(document, script);
+  }
+
+  private findJsonScripts(
+    document: TextDocument,
+    script?: HemttScript
+  ): number {
     let scriptOffset = 0;
     let inScripts = false;
 
@@ -175,6 +188,13 @@ export class HemttScriptsTreeDataProvider
     };
     visit(document.getText(), visitor);
     return scriptOffset;
+  }
+
+  private findTomlScripts(
+    _document: TextDocument,
+    _script?: HemttScript
+  ): number {
+    return 0;
   }
 
   private async runBuild(selection: HemttJSON) {
@@ -206,7 +226,7 @@ export class HemttScriptsTreeDataProvider
       return;
     }
     const document: TextDocument = await workspace.openTextDocument(uri);
-    const offset = this.findScript(
+    const offset = await this.findScript(
       document,
       selection instanceof HemttScript ? selection : undefined
     );

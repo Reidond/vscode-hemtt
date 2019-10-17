@@ -6,21 +6,21 @@
 import * as vscode from "vscode";
 import { runScript, findScriptAtPosition } from "../../tasks";
 
-export function runSelectedScript() {
-    const editor = vscode.window.activeTextEditor;
-    if (!editor) {
-        return;
-    }
-    const document = editor.document;
-    const contents = document.getText();
-    const selection = editor.selection;
-    const offset = document.offsetAt(selection.anchor);
+export async function runSelectedScript() {
+  const editor = vscode.window.activeTextEditor;
+  if (!editor) {
+    return;
+  }
+  const document = editor.document;
+  const contents = document.getText();
+  const selection = editor.selection;
+  const offset = document.offsetAt(selection.anchor);
 
-    const script = findScriptAtPosition(contents, offset);
-    if (script) {
-        runScript(script, document);
-    } else {
-        const message = "Could not find a valid npm script at the selection.";
-        vscode.window.showErrorMessage(message);
-    }
+  const script = await findScriptAtPosition(contents, offset);
+  if (script) {
+    runScript(script, document);
+  } else {
+    const message = "Could not find a valid npm script at the selection.";
+    vscode.window.showErrorMessage(message);
+  }
 }
