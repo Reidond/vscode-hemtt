@@ -21,7 +21,17 @@ import {
 import * as path from "path";
 import * as fs from "fs";
 import minimatch = require("minimatch");
-import { JSONVisitor, visit, ParseErrorCode } from "jsonc-parser";
+import {
+  IStringMap,
+  findAllJsonScripts,
+  findAllJsonScriptRanges,
+  findJsonScriptAtPosition
+} from "@utils/jsonVisitors";
+import {
+  findAllTomlScripts,
+  findAllTomlScriptsRanges,
+  findTomlScriptAtPosition
+} from "@utils/tomlVisitors";
 
 export interface IHemttTaskDefinition extends TaskDefinition {
   script: string;
@@ -412,62 +422,10 @@ export function runScript(script: string, document: TextDocument) {
   }
 }
 
-export interface IStringMap {
-  [s: string]: string;
-}
-
-function defaultProps(property: string) {
-  return (
-    property === "steps" ||
-    property === "steps_windows" ||
-    property === "steps_linux" ||
-    property === "show_output" ||
-    property === "parallel" ||
-    property === "foreach"
-  );
-}
-
 async function findAllScripts(buffer: string): Promise<IStringMap> {
   return (await hasHemttFile()).isHemttToml
     ? findAllTomlScripts(buffer)
     : findAllJsonScripts(buffer);
-}
-
-async function findAllJsonScripts(buffer: string): Promise<IStringMap> {
-  const scripts: IStringMap = {};
-  let script: string | undefined;
-  let inScripts = false;
-
-  const visitor: JSONVisitor = {
-    onError(_error: ParseErrorCode, _offset: number, _length: number) {
-      window.showErrorMessage(
-        `Got ${_error} at ${_offset}. Line length is ${_length}`
-      );
-    },
-    onLiteralValue(_value: any, _offset: number, _length: number) {
-      if (script) {
-        scripts[script] = "";
-        script = undefined;
-      }
-    },
-    onObjectProperty(property: string, _offset: number, _length: number) {
-      if (property === "scripts") {
-        inScripts = true;
-      } else if (inScripts && !script) {
-        if (!defaultProps(property)) {
-          script = property;
-        }
-      }
-    }
-  };
-
-  visit(buffer, visitor);
-
-  return scripts;
-}
-
-async function findAllTomlScripts(_buffer: string): Promise<IStringMap> {
-  return {};
 }
 
 export async function findAllScriptRanges(
@@ -478,53 +436,6 @@ export async function findAllScriptRanges(
     : findAllJsonScriptRanges(buffer);
 }
 
-function findAllJsonScriptRanges(
-  buffer: string
-): Map<string, [number, number, string]> {
-  const scripts: Map<string, [number, number, string]> = new Map();
-  let script: string | undefined;
-  let offset: number;
-  let length: number;
-
-  let inScripts = false;
-
-  const visitor: JSONVisitor = {
-    onError(_error: ParseErrorCode, _offset: number, _length: number) {
-      window.showErrorMessage(
-        `Got ${_error} at ${_offset}. Line length is ${_length}`
-      );
-    },
-    onLiteralValue(_value: any, _offset: number, _length: number) {
-      if (script) {
-        scripts.set(script, [offset, length, ""]);
-        script = undefined;
-      }
-    },
-    onObjectProperty(property: string, off: number, len: number) {
-      if (property === "scripts") {
-        inScripts = true;
-      } else if (inScripts) {
-        if (!defaultProps(property)) {
-          script = property;
-          offset = off;
-          length = len;
-        }
-      }
-    }
-  };
-
-  visit(buffer, visitor);
-
-  return scripts;
-}
-
-function findAllTomlScriptsRanges(
-  _buffer: string
-): Map<string, [number, number, string]> {
-  const scripts: Map<string, [number, number, string]> = new Map();
-  return scripts;
-}
-
 export async function findScriptAtPosition(
   buffer: string,
   offset: number
@@ -532,65 +443,6 @@ export async function findScriptAtPosition(
   return (await hasHemttFile()).isHemttToml
     ? findTomlScriptAtPosition(buffer, offset)
     : findJsonScriptAtPosition(buffer, offset);
-}
-
-function findJsonScriptAtPosition(
-  buffer: string,
-  offset: number
-): string | undefined {
-  let script: string | undefined;
-  let foundScript: string | undefined;
-  let inScripts = false;
-  let scriptStart: number | undefined;
-  const visitor: JSONVisitor = {
-    onError(_error: ParseErrorCode, _offset: number, _length: number) {
-      window.showErrorMessage(
-        `Got ${_error} at ${_offset}. Line length is ${_length}`
-      );
-    },
-    onObjectEnd() {
-      if (inScripts) {
-        inScripts = false;
-        scriptStart = undefined;
-      }
-    },
-    onLiteralValue(value: any, nodeOffset: number, nodeLength: number) {
-      if (inScripts && scriptStart) {
-        if (
-          typeof value === "string" &&
-          offset >= scriptStart &&
-          offset < nodeOffset + nodeLength
-        ) {
-          // found the script
-          inScripts = false;
-          foundScript = script;
-        } else {
-          script = undefined;
-        }
-      }
-    },
-    onObjectProperty(property: string, nodeOffset: number) {
-      if (property === "scripts") {
-        inScripts = true;
-      } else if (inScripts) {
-        if (!defaultProps(property)) {
-          scriptStart = nodeOffset;
-          script = property;
-        }
-      }
-    }
-  };
-
-  visit(buffer, visitor);
-
-  return foundScript;
-}
-
-function findTomlScriptAtPosition(
-  _buffer: string,
-  _offset: number
-): string | undefined {
-  return undefined;
 }
 
 export async function getScripts(
