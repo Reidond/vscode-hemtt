@@ -1,5 +1,7 @@
 import { JSONVisitor, ParseErrorCode, visit } from "jsonc-parser";
-import { window } from "vscode";
+import { window, TextDocument } from "vscode";
+import { HemttScript } from "@views/hemtt/HemttScript";
+import { getTaskName } from "../tasks";
 
 export interface IStringMap {
   [s: string]: string;
@@ -139,4 +141,34 @@ export function findJsonScriptAtPosition(
   visit(buffer, visitor);
 
   return foundScript;
+}
+
+export function findJsonScripts(
+  document: TextDocument,
+  script?: HemttScript
+): number {
+  let scriptOffset = 0;
+  let inScripts = false;
+
+  const visitor: JSONVisitor = {
+    onError() {
+      return scriptOffset;
+    },
+    onObjectProperty(property: string, offset: number, _length: number) {
+      if (property === "scripts") {
+        inScripts = true;
+        if (!script) {
+          // select the script section
+          scriptOffset = offset;
+        }
+      } else if (inScripts && script) {
+        const label = getTaskName(property, script.task.definition.path);
+        if (script.task.name === label) {
+          scriptOffset = offset;
+        }
+      }
+    }
+  };
+  visit(document.getText(), visitor);
+  return scriptOffset;
 }

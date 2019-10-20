@@ -34,6 +34,8 @@ import { HemttScript } from "./HemttScript";
 import { JSONVisitor, visit } from "jsonc-parser";
 import * as path from "path";
 import { HemttTOML } from "./HemttTOML";
+import { findTomlScripts } from "@utils/tomlVisitors";
+import { findJsonScripts } from "@utils/jsonVisitors";
 
 export class HemttScriptsTreeDataProvider
   implements TreeDataProvider<TreeItem> {
@@ -156,45 +158,8 @@ export class HemttScriptsTreeDataProvider
     script?: HemttScript
   ): Promise<number> {
     return (await hasHemttFile()).isHemttToml
-      ? this.findTomlScripts(document, script)
-      : this.findJsonScripts(document, script);
-  }
-
-  private findJsonScripts(
-    document: TextDocument,
-    script?: HemttScript
-  ): number {
-    let scriptOffset = 0;
-    let inScripts = false;
-
-    const visitor: JSONVisitor = {
-      onError() {
-        return scriptOffset;
-      },
-      onObjectProperty(property: string, offset: number, _length: number) {
-        if (property === "scripts") {
-          inScripts = true;
-          if (!script) {
-            // select the script section
-            scriptOffset = offset;
-          }
-        } else if (inScripts && script) {
-          const label = getTaskName(property, script.task.definition.path);
-          if (script.task.name === label) {
-            scriptOffset = offset;
-          }
-        }
-      }
-    };
-    visit(document.getText(), visitor);
-    return scriptOffset;
-  }
-
-  private findTomlScripts(
-    _document: TextDocument,
-    _script?: HemttScript
-  ): number {
-    return 0;
+      ? findTomlScripts(document, script)
+      : findJsonScripts(document, script);
   }
 
   private async runBuild(selection: HemttJSON) {

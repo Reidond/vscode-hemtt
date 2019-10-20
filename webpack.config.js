@@ -22,9 +22,11 @@ const config = {
   resolve: {
     extensions: [".ts", ".js"],
     alias: {
-      "@commands": path.resolve(__dirname, './src/commands'),
-      "@utils": path.resolve(__dirname, './src/utils'),
-      "@shared": path.resolve(__dirname, './src/shared')
+      "@src": path.resolve(__dirname, "./src"),
+      "@commands": path.resolve(__dirname, "./src/commands"),
+      "@utils": path.resolve(__dirname, "./src/utils"),
+      "@shared": path.resolve(__dirname, "./src/shared"),
+      "@views": path.resolve(__dirname, "./src/views")
     }
   },
   module: {

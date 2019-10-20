@@ -1,4 +1,6 @@
 import { IStringMap } from "./jsonVisitors";
+import { HemttScript } from "@views/hemtt/HemttScript";
+import { TextDocument } from "vscode";
 
 export async function findAllTomlScripts(_buffer: string): Promise<IStringMap> {
   return {};
@@ -16,4 +18,11 @@ export function findTomlScriptAtPosition(
   _offset: number
 ): string | undefined {
   return undefined;
+}
+
+export function findTomlScripts(
+  _document: TextDocument,
+  _script?: HemttScript
+): number {
+  return 0;
 }
