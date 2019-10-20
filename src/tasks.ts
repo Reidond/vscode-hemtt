@@ -448,6 +448,7 @@ export async function findScriptAtPosition(
 export async function getScripts(
   hemttJsonUri: Uri
 ): Promise<IStringMap | undefined> {
+  // prettier-ignore
   if (hemttJsonUri?.scheme !== "file") {
     return undefined;
   }
