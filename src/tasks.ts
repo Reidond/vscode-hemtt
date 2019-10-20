@@ -448,7 +448,7 @@ export async function findScriptAtPosition(
 export async function getScripts(
   hemttJsonUri: Uri
 ): Promise<IStringMap | undefined> {
-  if (hemttJsonUri.scheme !== "file") {
+  if (hemttJsonUri?.scheme !== "file") {
     return undefined;
   }
 
