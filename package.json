@@ -120,6 +120,16 @@
         "command": "hemtt.project.moveFunctionOnContext",
         "title": "Move Function",
         "category": "HEMTT"
+      },
+      {
+        "command": "hemtt.project.build.buildOnPalette",
+        "title": "Build",
+        "category": "HEMTT"
+      },
+      {
+        "command": "hemtt.project.build.buildReleaseOnPalette",
+        "title": "Build Release",
+        "category": "HEMTT"
       }
     ],
     "menus": {
