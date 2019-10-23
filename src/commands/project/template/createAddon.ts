@@ -2,7 +2,8 @@ import * as vscode from "vscode";
 import * as fs from "fs";
 import * as path from "path";
 import { MultiStepInput } from "@utils/MultiStepInput";
-import { createTask } from "../../tasks";
+import { createTask } from "../../../tasks";
+import { getHEMTTFile } from "../../../utils/getHEMTTFile";
 
 const config = vscode.workspace.getConfiguration("hemtt");
 
@@ -77,7 +78,7 @@ export async function createAddon() {
     "template addon",
     `template addon ${state.addonName}`,
     workspaceFolder,
-    vscode.Uri.file(`${workspaceFolderPath}/hemtt.json`)
+    getHEMTTFile()
   );
 
   vscode.window.withProgress(
