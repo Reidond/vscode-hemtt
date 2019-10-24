@@ -1,5 +1,5 @@
 import { IStringMap } from "./jsonVisitors";
-import { HemttScript } from "@views/hemtt/HemttScript";
+import { HemttScript } from "./HemttScript";
 import { TextDocument } from "vscode";
 
 export async function findAllTomlScripts(_buffer: string): Promise<IStringMap> {

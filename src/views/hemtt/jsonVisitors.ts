@@ -1,7 +1,7 @@
 import { JSONVisitor, ParseErrorCode, visit } from "jsonc-parser";
 import { window, TextDocument } from "vscode";
-import { HemttScript } from "@views/hemtt/HemttScript";
-import { getTaskName } from "../tasks";
+import { HemttScript } from "./HemttScript";
+import { getTaskName } from "../../tasks";
 
 export interface IStringMap {
   [s: string]: string;

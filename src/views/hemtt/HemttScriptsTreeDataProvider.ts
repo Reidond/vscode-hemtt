@@ -34,8 +34,8 @@ import { HemttScript } from "./HemttScript";
 import { JSONVisitor, visit } from "jsonc-parser";
 import * as path from "path";
 import { HemttTOML } from "./HemttTOML";
-import { findTomlScripts } from "@utils/tomlVisitors";
-import { findJsonScripts } from "@utils/jsonVisitors";
+import { findTomlScripts } from "./tomlVisitors";
+import { findJsonScripts } from "./jsonVisitors";
 
 export class HemttScriptsTreeDataProvider
   implements TreeDataProvider<TreeItem> {

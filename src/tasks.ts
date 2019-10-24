@@ -26,12 +26,12 @@ import {
   findAllJsonScripts,
   findAllJsonScriptRanges,
   findJsonScriptAtPosition
-} from "@utils/jsonVisitors";
+} from "./views/hemtt/jsonVisitors";
 import {
   findAllTomlScripts,
   findAllTomlScriptsRanges,
   findTomlScriptAtPosition
-} from "@utils/tomlVisitors";
+} from "./views/hemtt/tomlVisitors";
 
 export interface IHemttTaskDefinition extends TaskDefinition {
   script: string;
@@ -155,7 +155,7 @@ export async function hasHemttScripts(): Promise<boolean> {
   try {
     for (const folder of folders) {
       if (isAutoDetectionEnabled(folder)) {
-        const relativePattern = new RelativePattern(folder, "**/hemtt.json");
+        const relativePattern = new RelativePattern(folder, "**/hemtt.toml") || new RelativePattern(folder, "**/hemtt.json");
         const paths = await workspace.findFiles(
           relativePattern,
           "**/include/**"
@@ -183,7 +183,7 @@ async function detectHemttScripts(): Promise<Task[]> {
   try {
     for (const folder of folders) {
       if (isAutoDetectionEnabled(folder)) {
-        const relativePattern = new RelativePattern(folder, "**/hemtt.json");
+        const relativePattern = new RelativePattern(folder, "**/hemtt.toml") || new RelativePattern(folder, "**/hemtt.json");
         const paths = await workspace.findFiles(
           relativePattern,
           "**/include/**"
@@ -278,8 +278,8 @@ async function provideHemttScriptsForFolder(
     // }
     result.push(task);
   });
-  // always add npm install (without a problem matcher)
-  result.push(createTask("install", "install", folder, hemttJsonUri, []));
+  // always add hemtt build (without a problem matcher)
+  result.push(createTask("build", "build", folder, hemttJsonUri, []));
   return result;
 }
 
