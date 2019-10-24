@@ -26,12 +26,12 @@ import {
   findAllJsonScripts,
   findAllJsonScriptRanges,
   findJsonScriptAtPosition
-} from "@utils/jsonVisitors";
+} from "./views/hemtt/visitors/json/jsonVisitor";
 import {
   findAllTomlScripts,
   findAllTomlScriptsRanges,
   findTomlScriptAtPosition
-} from "@utils/tomlVisitors";
+} from "./views/hemtt/visitors/toml/tomlVisitor";
 
 export interface IHemttTaskDefinition extends TaskDefinition {
   script: string;
