@@ -313,7 +313,7 @@
   "devDependencies": {
     "@types/glob": "^7.1.1",
     "@types/mocha": "^5.2.6",
-    "@types/node": "^10.12.21",
+    "@types/node": "12.11.7",
     "@types/vscode": "^1.38.0",
     "glob": "^7.1.4",
     "mocha": "^6.1.4",
@@ -327,6 +327,7 @@
   },
   "dependencies": {
     "@toml-tools/parser": "^0.3.1",
+    "chevrotain": "^6.5.0",
     "eol": "^0.9.1",
     "jsonc-parser": "^2.1.1",
     "vscode-nls": "^4.1.1"
