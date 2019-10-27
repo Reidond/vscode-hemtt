@@ -1,28 +1,47 @@
 import { IStringMap } from "../json/jsonVisitor";
 import { HemttScript } from "../../HemttScript";
+import { TomlScripts } from "./TomlScripts";
+import { TomlScriptsRanges } from "./AllTomlScriptsRanges";
 import { TextDocument } from "vscode";
+import { parse } from "@toml-tools/parser";
+import { TomlScriptAtPosition } from "./TomlScriptAtPosition";
 
-export async function findAllTomlScripts(_buffer: string): Promise<IStringMap> {
-  return {};
+export async function findAllTomlScripts(buffer: string): Promise<IStringMap> {
+  const tomlCst = parse(buffer);
+  const myVisitor = new TomlScripts();
+  myVisitor.visit(tomlCst);
+
+  return myVisitor.tableKeyNames;
 }
 
 export function findAllTomlScriptsRanges(
-  _buffer: string
+  buffer: string
 ): Map<string, [number, number, string]> {
-  const scripts: Map<string, [number, number, string]> = new Map();
-  return scripts;
+  const tomlCst = parse(buffer);
+  const myVisitor = new TomlScriptsRanges();
+  myVisitor.visit(tomlCst);
+
+  return myVisitor.scripts;
 }
 
 export function findTomlScriptAtPosition(
-  _buffer: string,
-  _offset: number
+  buffer: string,
+  offset: number
 ): string | undefined {
-  return undefined;
+  const tomlCst = parse(buffer);
+  const myVisitor = new TomlScriptAtPosition(offset);
+  myVisitor.visit(tomlCst);
+
+  return myVisitor.script;
 }
 
 export function findTomlScripts(
-  _document: TextDocument,
-  _script?: HemttScript
+  document: TextDocument,
+  script?: HemttScript
 ): number {
-  return 0;
+  const tomlCst = parse(document.getText());
+  const myVisitor = new TomlScripts(script);
+  myVisitor.visit(tomlCst);
+
+  return myVisitor.offset;
 }

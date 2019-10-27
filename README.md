@@ -4,7 +4,7 @@ Use hemtt tool from your heavily themed VSCode
 
 ## Features
 
-- Scripts View
+- Scripts View (TOML/JSON)
 - Creating addon
 
 ### Requirements
