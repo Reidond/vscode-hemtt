@@ -74,7 +74,7 @@ export async function createAddon() {
     return;
   }
 
-  const task = createTask(
+  const task = await createTask(
     "template addon",
     `template addon ${state.addonName}`,
     workspaceFolder,

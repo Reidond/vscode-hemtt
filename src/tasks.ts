@@ -49,7 +49,7 @@ export class HemttTaskProvider implements TaskProvider {
     return provideHemttScripts();
   }
 
-  public resolveTask(_task: Task): Task | undefined {
+  public async resolveTask(_task: Task): Promise<Task | undefined> {
     const hemttTask = _task.definition.script;
     if (hemttTask) {
       const kind: IHemttTaskDefinition = _task.definition as any;
@@ -71,7 +71,13 @@ export class HemttTaskProvider implements TaskProvider {
           path: _task.scope.uri.path + "/hemtt.json"
         });
       }
-      return createTask(kind, `run ${kind.script}`, _task.scope, hemttJsonUri);
+      const task = await createTask(
+        kind,
+        `run ${kind.script}`,
+        _task.scope,
+        hemttJsonUri
+      );
+      return task;
     }
     return undefined;
   }
@@ -155,7 +161,9 @@ export async function hasHemttScripts(): Promise<boolean> {
   try {
     for (const folder of folders) {
       if (isAutoDetectionEnabled(folder)) {
-        const relativePattern = new RelativePattern(folder, "**/hemtt.json");
+        const relativePattern = (await hasHemttFile()).isHemttToml
+          ? new RelativePattern(folder, "**/hemtt.toml")
+          : new RelativePattern(folder, "**/hemtt.json");
         const paths = await workspace.findFiles(
           relativePattern,
           "**/include/**"
@@ -183,7 +191,9 @@ async function detectHemttScripts(): Promise<Task[]> {
   try {
     for (const folder of folders) {
       if (isAutoDetectionEnabled(folder)) {
-        const relativePattern = new RelativePattern(folder, "**/hemtt.json");
+        const relativePattern = (await hasHemttFile()).isHemttToml
+          ? new RelativePattern(folder, "**/hemtt.toml")
+          : new RelativePattern(folder, "**/hemtt.json");
         const paths = await workspace.findFiles(
           relativePattern,
           "**/include/**"
@@ -262,8 +272,8 @@ async function provideHemttScriptsForFolder(
   const result: Task[] = [];
 
   const prePostScripts = getPrePostScripts(scripts);
-  Object.keys(scripts).forEach(each => {
-    const task = createTask(each, `run ${each}`, folder!, hemttJsonUri);
+  for (const each of Object.keys(scripts)) {
+    const task = await createTask(each, `run ${each}`, folder!, hemttJsonUri);
     const lowerCaseTaskName = each.toLowerCase();
     if (isBuildTask(lowerCaseTaskName)) {
       task.group = TaskGroup.Build;
@@ -273,13 +283,10 @@ async function provideHemttScriptsForFolder(
     if (prePostScripts.has(each)) {
       task.group = TaskGroup.Clean; // hack: use Clean group to tag pre/post scripts
     }
-    // if (isDebugScript(scripts![each])) {
-    //     task.group = TaskGroup.Rebuild; // hack: use Rebuild group to tag debug scripts
-    // }
     result.push(task);
-  });
-  // always add npm install (without a problem matcher)
-  result.push(createTask("install", "install", folder, hemttJsonUri, []));
+  }
+
+  result.push(await createTask("install", "install", folder, hemttJsonUri, []));
   return result;
 }
 
@@ -290,13 +297,13 @@ export function getTaskName(script: string, relativePath: string | undefined) {
   return script;
 }
 
-export function createTask(
+export async function createTask(
   script: IHemttTaskDefinition | string,
   cmd: string,
   folder: WorkspaceFolder,
   hemttJsonUri: Uri,
   matcher?: any
-): Task {
+): Promise<Task> {
   const kind: IHemttTaskDefinition =
     typeof script === "string" ? { type: "hemtt", script } : script;
 
@@ -305,18 +312,26 @@ export function createTask(
     return `${packageManager} ${cmd}`;
   }
 
-  function getRelativePath(folder: WorkspaceFolder, hemttJsonUri: Uri): string {
+  async function getRelativePath(
+    folder: WorkspaceFolder,
+    hemttJsonUri: Uri
+  ): Promise<string> {
     const rootUri = folder.uri;
-    const absolutePath = hemttJsonUri.path.substring(
-      0,
-      hemttJsonUri.path.length - "hemtt.json".length
-    );
+    const absolutePath = (await hasHemttFile()).isHemttToml
+      ? hemttJsonUri.path.substring(
+          0,
+          hemttJsonUri.path.length - "hemtt.toml".length
+        )
+      : hemttJsonUri.path.substring(
+          0,
+          hemttJsonUri.path.length - "hemtt.json".length
+        );
     return absolutePath.substring(rootUri.path.length + 1);
   }
 
-  const relativeHemttJson = getRelativePath(folder, hemttJsonUri);
+  const relativeHemttJson = await getRelativePath(folder, hemttJsonUri);
   if (relativeHemttJson.length) {
-    kind.path = getRelativePath(folder, hemttJsonUri);
+    kind.path = await getRelativePath(folder, hemttJsonUri);
   }
   const taskName = getTaskName(kind.script, relativeHemttJson);
   const cwd = path.dirname(hemttJsonUri.fsPath);
@@ -413,11 +428,11 @@ async function readFile(file: string): Promise<string> {
   });
 }
 
-export function runScript(script: string, document: TextDocument) {
+export async function runScript(script: string, document: TextDocument) {
   const uri = document.uri;
   const folder = workspace.getWorkspaceFolder(uri);
   if (folder) {
-    const task = createTask(script, `run ${script}`, folder, uri);
+    const task = await createTask(script, `run ${script}`, folder, uri);
     tasks.executeTask(task);
   }
 }

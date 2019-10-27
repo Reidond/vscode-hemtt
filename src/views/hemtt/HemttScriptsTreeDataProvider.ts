@@ -170,7 +170,7 @@ export class HemttScriptsTreeDataProvider
     if (!uri) {
       return;
     }
-    const task = createTask(
+    const task = await createTask(
       "build",
       "build",
       selection.folder.workspaceFolder,
