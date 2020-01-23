@@ -20,14 +20,7 @@ const config = {
     vscode: "commonjs vscode"
   },
   resolve: {
-    extensions: [".ts", ".js"],
-    alias: {
-      "@src": path.resolve(__dirname, "./src"),
-      "@commands": path.resolve(__dirname, "./src/commands"),
-      "@utils": path.resolve(__dirname, "./src/utils"),
-      "@shared": path.resolve(__dirname, "./src/shared"),
-      "@views": path.resolve(__dirname, "./src/views")
-    }
+    extensions: [".ts", ".js"]
   },
   module: {
     rules: [

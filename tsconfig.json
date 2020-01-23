@@ -11,14 +11,7 @@
     "noFallthroughCasesInSwitch": true,
     "noUnusedParameters": true,
     "esModuleInterop": true,
-    "baseUrl": "./",
-    "paths": {
-      "@/*": ["src/*"],
-      "@commands/*": ["src/commands/*"],
-      "@utils/*": ["src/utils/*"],
-      "@shared/*": ["src/shared/*"],
-      "@views/*": ["src/views/*"]
-    }
+    "baseUrl": "./"
   },
   "exclude": ["node_modules", ".vscode-test"]
 }

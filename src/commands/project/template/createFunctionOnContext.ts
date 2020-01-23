@@ -1,5 +1,5 @@
 import { Uri, window, workspace } from "vscode";
-import { MultiStepInput } from "@utils/MultiStepInput";
+import { MultiStepInput } from "../../../utils/MultiStepInput";
 
 export async function createFunctionOnContext(dir: Uri) {
   const dirArr = dir.path.split("/");

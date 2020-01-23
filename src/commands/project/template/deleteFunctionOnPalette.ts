@@ -6,11 +6,11 @@ import {
   CancellationToken,
   FileType
 } from "vscode";
-import { MultiStepInput } from "@utils/MultiStepInput";
-import { findAddon } from "@shared/findAddon";
-import { findAllFunctions } from "@shared/findFunctions";
-import { getAddonFunctions } from "@shared/getAddonFunctions";
-import { getAddons } from "@shared/getAddons";
+import { MultiStepInput } from "../../../utils/MultiStepInput";
+import { findAddon } from "../../../shared/findAddon";
+import { findAllFunctions } from "../../../shared/findFunctions";
+import { getAddonFunctions } from "../../../shared/getAddonFunctions";
+import { getAddons } from "../../../shared/getAddons";
 
 export async function deleteFunctionOnPalette() {
   const workspaceFolder = workspace.workspaceFolders![0];

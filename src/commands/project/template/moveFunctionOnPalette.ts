@@ -6,9 +6,9 @@ import {
   Uri,
   workspace
 } from "vscode";
-import { getAddons } from "@shared/getAddons";
-import { findAllFunctions } from "@shared/findFunctions";
-import { MultiStepInput } from "@utils/MultiStepInput";
+import { getAddons } from "../../../shared/getAddons";
+import { findAllFunctions } from "../../../shared/findFunctions";
+import { MultiStepInput } from "../../../utils/MultiStepInput";
 
 export async function moveFunctionOnPalette() {
   const workspaceFolder = workspace.workspaceFolders![0];
