@@ -1,4 +1,4 @@
-import { MultiStepInput } from "@utils/MultiStepInput";
+import { MultiStepInput } from "../../../utils/MultiStepInput";
 import {
   FileType,
   Uri,

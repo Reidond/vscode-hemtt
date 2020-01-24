@@ -5,8 +5,8 @@ import {
   QuickPickItem,
   CancellationToken
 } from "vscode";
-import { MultiStepInput } from "@utils/MultiStepInput";
-import { getAddons } from "@shared/getAddons";
+import { MultiStepInput } from "../../../utils/MultiStepInput";
+import { getAddons } from "../../../shared/getAddons";
 
 export async function moveFunctionOnContext(dir: Uri) {
   const dirArr = dir.path.split("/");

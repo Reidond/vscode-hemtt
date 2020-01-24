@@ -1,11 +1,12 @@
 import * as vscode from "vscode";
+
 import { registerCommands } from "./commands/registerCommands";
 import {
   HemttScriptHoverProvider,
   invalidateHoverScriptsCache
 } from "./scriptHover";
+import { hasHemttFile, HemttTaskProvider, invalidateTasksCache } from "./tasks";
 import { HemttScriptsTreeDataProvider } from "./views/hemtt/HemttScriptsTreeDataProvider";
-import { HemttTaskProvider, invalidateTasksCache, hasHemttFile } from "./tasks";
 
 let treeDataProvider: HemttScriptsTreeDataProvider | undefined;
 
