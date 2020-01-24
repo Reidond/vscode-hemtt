@@ -23,13 +23,13 @@
   "activationEvents": [
     "onCommand:hemtt.project.create",
     "onCommand:hemtt.project.init",
-    "onCommand:hemtt.project.createAddon",
-    "onCommand:hemtt.project.createFunctionOnPalette",
-    "onCommand:hemtt.project.createFunctionOnContext",
-    "onCommand:hemtt.project.deleteFunctionOnPalette",
-    "onCommand:hemtt.project.deleteFunctionOnContext",
-    "onCommand:hemtt.project.moveFunctionOnPalette",
-    "onCommand:hemtt.project.moveFunctionOnContext",
+    "onCommand:hemtt.project.template.createAddon",
+    "onCommand:hemtt.project.template.createFunctionOnPalette",
+    "onCommand:hemtt.project.template.createFunctionOnContext",
+    "onCommand:hemtt.project.template.deleteFunctionOnPalette",
+    "onCommand:hemtt.project.template.deleteFunctionOnContext",
+    "onCommand:hemtt.project.template.moveFunctionOnPalette",
+    "onCommand:hemtt.project.template.moveFunctionOnContext",
     "workspaceContains:hemtt.json",
     "onLanguage:json",
     "workspaceContains:hemtt.toml",
@@ -59,7 +59,7 @@
         "category": "HEMTT"
       },
       {
-        "command": "hemtt.project.createAddon",
+        "command": "hemtt.project.template.createAddon",
         "title": "Create Addon",
         "category": "HEMTT"
       },
@@ -92,32 +92,32 @@
         "title": "Run Selected Script"
       },
       {
-        "command": "hemtt.project.createFunctionOnPalette",
+        "command": "hemtt.project.template.createFunctionOnPalette",
         "title": "Create Function",
         "category": "HEMTT"
       },
       {
-        "command": "hemtt.project.createFunctionOnContext",
+        "command": "hemtt.project.template.createFunctionOnContext",
         "title": "New Function",
         "category": "HEMTT"
       },
       {
-        "command": "hemtt.project.deleteFunctionOnPalette",
+        "command": "hemtt.project.template.deleteFunctionOnPalette",
         "title": "Delete Function",
         "category": "HEMTT"
       },
       {
-        "command": "hemtt.project.deleteFunctionOnContext",
+        "command": "hemtt.project.template.deleteFunctionOnContext",
         "title": "Delete Function",
         "category": "HEMTT"
       },
       {
-        "command": "hemtt.project.moveFunctionOnPalette",
+        "command": "hemtt.project.template.moveFunctionOnPalette",
         "title": "Move Function",
         "category": "HEMTT"
       },
       {
-        "command": "hemtt.project.moveFunctionOnContext",
+        "command": "hemtt.project.template.moveFunctionOnContext",
         "title": "Move Function",
         "category": "HEMTT"
       },
@@ -155,15 +155,15 @@
           "when": "false"
         },
         {
-          "command": "hemtt.project.createFunctionOnContext",
+          "command": "hemtt.project.template.createFunctionOnContext",
           "when": "false"
         },
         {
-          "command": "hemtt.project.deleteFunctionOnContext",
+          "command": "hemtt.project.template.deleteFunctionOnContext",
           "when": "false"
         },
         {
-          "command": "hemtt.project.moveFunctionOnContext",
+          "command": "hemtt.project.template.moveFunctionOnContext",
           "when": "false"
         }
       ],
@@ -176,17 +176,17 @@
       ],
       "explorer/context": [
         {
-          "command": "hemtt.project.createFunctionOnContext",
+          "command": "hemtt.project.template.createFunctionOnContext",
           "when": "explorerResourceIsFolder && resourceFilename == functions",
           "group": "hemtt@1"
         },
         {
-          "command": "hemtt.project.deleteFunctionOnContext",
+          "command": "hemtt.project.template.deleteFunctionOnContext",
           "when": "resourceScheme == file && resourceExtname == .sqf",
           "group": "hemtt@2"
         },
         {
-          "command": "hemtt.project.moveFunctionOnContext",
+          "command": "hemtt.project.template.moveFunctionOnContext",
           "when": "resourceScheme == file && resourceExtname == .sqf",
           "group": "hemtt@3"
         }
@@ -305,9 +305,9 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "webpack --mode production",
-    "compile": "webpack --mode none",
-    "watch": "webpack --mode none --watch",
+    "vscode:prepublish": "npm run compile",
+    "compile": "parcel build ./src/extension.ts --log-level 4 --target node",
+    "watch": "parcel ./src/extension.ts --target node",
     "test-compile": "tsc -p ./"
   },
   "devDependencies": {
@@ -317,6 +317,7 @@
     "@types/vscode": "^1.38.0",
     "glob": "^7.1.4",
     "mocha": "^6.1.4",
+    "parcel-bundler": "^1.12.4",
     "ts-loader": "^6.0.4",
     "tslint": "^5.12.1",
     "tslint-config-prettier": "^1.18.0",

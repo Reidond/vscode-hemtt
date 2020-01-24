@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import * as fs from "fs";
-import { MultiStepInput } from "@utils/MultiStepInput";
+import { MultiStepInput } from "../../utils/MultiStepInput";
 
 const config = vscode.workspace.getConfiguration("hemtt");
 
