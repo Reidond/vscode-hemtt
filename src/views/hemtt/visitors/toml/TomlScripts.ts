@@ -20,7 +20,7 @@ export class TomlScripts extends BaseTomlCstVisitorWithDefaults {
 
   public stdTable(ctx: StdTableCtx) {
     const data = this.visit(ctx.key);
-    this.tableKeyNames[data[0]] = ""; // Just to be compatible with json visitors
+    this.tableKeyNames[data[0]] = "";
     this.offset = data[1];
   }
 
